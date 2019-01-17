@@ -23,8 +23,8 @@ const { UploadScalar, DateScalar } = require('../custom-types');
 
 module.exports = app => {
   return {
-    // Upload: UploadScalar,
-    // Date: DateScalar,
+    Upload: UploadScalar,
+    Date: DateScalar,
 
     Query: {
       viewer() {
@@ -146,7 +146,6 @@ module.exports = app => {
 
         // image = await image;
         // const user = await jwt.decode(context.token, app.get('JWT_SECRET'));
-        console.log(args);
         try {
           const newItem = await context.pgResource.saveNewItem({
             item: args.item

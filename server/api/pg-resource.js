@@ -2,21 +2,14 @@
 
 const strs = require('stringstream');
 
-function tagsQueryString(tags, itemid, result) {
-  /**
-   * Challenge:
-   * This function is recursive, and a little complicated.
-   * Can you refactor it to be simpler / more readable?
-   */
+function tagsQueryString(tags, itemid) {
   const length = tags.length;
-  return length === 0
-    ? `${result};`
-    : tags.shift() &&
-        tagsQueryString(
-          tags,
-          itemid,
-          `${result}($${tags.length + 1}, ${itemid})${length === 1 ? '' : ','}`
-        );
+  let result = [];
+  for (let i = 1; i <= length; i++) {
+    result.push(`($${i}, ${itemid})`);
+  }
+  result = result.join(',') + ';';
+  return result;
 }
 
 module.exports = postgres => {
@@ -197,8 +190,6 @@ module.exports = postgres => {
               // imageStream.on('end', async () => {
               //   // Image has been converted, begin saving things
               const { title, description, tags } = item;
-
-              // Generate new Item query
               const insertItemQuery = {
                 text:
                   'INSERT INTO items (title, description) VALUES ($1, $2) RETURNING *',
@@ -232,33 +223,26 @@ module.exports = postgres => {
               // @TODO
               // -------------------------------
 
-              // Generate tag relationships query (use the'tagsQueryString' helper function provided)
-              // @TODO
-              // -------------------------------
+              const qs = tagsQueryString(tags, newItem.id, '');
+              const insertItemTagsQuery = {
+                text: `INSERT INTO itemtags (tagid, itemid) VALUES ${qs}`,
+                values: tags.map(({ id }) => parseInt(id))
+              };
+              const itemTagsResult = await client.query(insertItemTagsQuery);
 
-              // Insert tags
-              // @TODO
-              // -------------------------------
-
-              // Commit the entire transaction!
               client.query('COMMIT', err => {
                 if (err) {
                   throw err;
                 }
                 // release the client back to the pool
                 done();
-                // Uncomment this resolve statement when you're ready!
-                resolve(newItem.rows[0]);
-                // -------------------------------
+                resolve(newItem);
               });
               //});
             });
           } catch (e) {
-            console.log('ERROR', e);
-            // Something went wrong
             client.query('ROLLBACK', err => {
               if (err) {
-                console.log('ROLLBACK', err);
                 throw err;
               }
               // release the client back to the pool
