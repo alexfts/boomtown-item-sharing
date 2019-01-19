@@ -2,15 +2,19 @@
 
 const strs = require('stringstream');
 
-function tagsQueryString(tags, itemid) {
-  const length = tags.length;
-  let result = [];
-  for (let index = 1; index <= length; index++) {
-    result.push(`($${index}, ${itemid})`);
+const tagsQueryString = (tags, itemid) => {
+  function range(start, end) {
+    const result = [];
+    for (let i = start; i <= end; i++) {
+      result.push(i);
+    }
+    return result;
   }
+  const indices = range(1, tags.length);
+  let result = indices.map(index => `($${index}, ${itemid})`);
   result = result.join(',') + ';';
   return result;
-}
+};
 
 module.exports = postgres => {
   return {
@@ -105,9 +109,9 @@ module.exports = postgres => {
          *  to your query text using string interpolation
          */
 
-        text: `SELECT * FROM items ${
-          idToOmit ? 'WHERE ownerid <> $1 OR ownerid IS NULL' : ''
-        }`,
+        text: `SELECT * FROM items WHERE ownerid IS NOT NULL ${
+          idToOmit ? ' AND ownerid <> $1' : ''
+        } `,
         values: idToOmit ? [idToOmit] : []
       });
       return items.rows;

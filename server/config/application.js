@@ -10,7 +10,7 @@ module.exports = app => {
    *  @TODO: Configuration Variables
    *  JWT_SECRET
    *
-   *  And the following non-security related information should also be set for use elsewhere:
+   *  The following non-security related information should also be set for use elsewhere:
    *
    *  JWT_COOKIE_NAME
    *  CORS_CONFIG (already set for you below)
