@@ -1,5 +1,8 @@
 const strs = require('stringstream');
 
+/**
+ * Helper function to generate a SQL statement
+ * for inserting multiple tags for an item */
 const tagsQueryString = (tags, itemid) => {
   function range(start, end) {
     const result = [];
@@ -14,13 +17,32 @@ const tagsQueryString = (tags, itemid) => {
   return result;
 };
 
+const insertItemTags = async (client, tags, item) => {
+  const qs = tagsQueryString(tags, item.id);
+  const insertItemTagsQuery = {
+    text: `INSERT INTO itemtags (tagid, itemid) VALUES ${qs}`,
+    values: tags.map(({ id }) => parseInt(id))
+  };
+  await client.query(insertItemTagsQuery);
+};
+
+const insertItem = async (client, title, description) => {
+  const insertItemQuery = {
+    text: 'INSERT INTO items (title, description) VALUES ($1, $2) RETURNING *',
+    values: [title, description]
+  };
+
+  const insertItemResult = await client.query(insertItemQuery);
+  return insertItemResult.rows[0];
+};
+
 module.exports = postgres => {
   return {
     async createUser({ fullname, email, password }) {
       const newUserInsert = {
         text:
           // @TODO: Authentication - Server
-          'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *',
+          'INSERT INTO users (name, email, password) VALUES ($1, $2, $3)',
         values: [fullname, email, password]
       };
       try {
@@ -141,6 +163,7 @@ module.exports = postgres => {
           try {
             client.query('BEGIN', async err => {
               // @TODO Convert image (file stream) to Base64
+
               // const imageStream = image.stream.pipe(strs('base64'));
 
               // let base64Str = '';
@@ -150,16 +173,11 @@ module.exports = postgres => {
 
               // imageStream.on('end', async err => {
               //   // Image has been converted, begin saving things
+
               const { title, description, tags } = item;
-              const insertItemQuery = {
-                text:
-                  'INSERT INTO items (title, description) VALUES ($1, $2) RETURNING *',
-                values: [title, description]
-              };
+              const newItem = await insertItem(client, title, description);
 
-              const insertItemResult = await client.query(insertItemQuery);
-              const newItem = insertItemResult.rows[0];
-
+              /* @TODO: Upload image */
               // const imageUploadQuery = {
               //   text:
               //     'INSERT INTO uploads (itemid, filename, mimetype, encoding, data) VALUES ($1, $2, $3, $4, $5) RETURNING *',
@@ -184,12 +202,7 @@ module.exports = postgres => {
               // @TODO
               // -------------------------------
 
-              const qs = tagsQueryString(tags, newItem.id, '');
-              const insertItemTagsQuery = {
-                text: `INSERT INTO itemtags (tagid, itemid) VALUES ${qs}`,
-                values: tags.map(({ id }) => parseInt(id))
-              };
-              await client.query(insertItemTagsQuery);
+              await insertItemTags(client, tags, newItem);
 
               client.query('COMMIT', err => {
                 if (err) {
