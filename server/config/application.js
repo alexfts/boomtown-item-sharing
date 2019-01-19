@@ -25,7 +25,6 @@ module.exports = app => {
   if (process.env.NODE_ENV === 'production') {
     const root = path.resolve(__dirname, '../public');
 
-    // Serve the static front-end from /public when deployed
     app.use(express.static(root));
     app.use(fallback('index.html', { root }));
   }

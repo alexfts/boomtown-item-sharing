@@ -5,8 +5,8 @@ const strs = require('stringstream');
 function tagsQueryString(tags, itemid) {
   const length = tags.length;
   let result = [];
-  for (let i = 1; i <= length; i++) {
-    result.push(`($${i}, ${itemid})`);
+  for (let index = 1; index <= length; index++) {
+    result.push(`($${index}, ${itemid})`);
   }
   result = result.join(',') + ';';
   return result;
@@ -105,7 +105,9 @@ module.exports = postgres => {
          *  to your query text using string interpolation
          */
 
-        text: `SELECT * FROM items ${idToOmit ? 'WHERE ownerid <> $1' : ''}`,
+        text: `SELECT * FROM items ${
+          idToOmit ? 'WHERE ownerid <> $1 OR ownerid IS NULL' : ''
+        }`,
         values: idToOmit ? [idToOmit] : []
       });
       return items.rows;
@@ -178,7 +180,7 @@ module.exports = postgres => {
         postgres.connect((err, client, done) => {
           try {
             // Begin postgres transaction
-            client.query('BEGIN', async err => {
+            client.query('BEGIN', async () => {
               // // Convert image (file stream) to Base64
               // const imageStream = image.stream.pipe(strs('base64'));
 
