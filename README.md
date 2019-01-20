@@ -2,9 +2,10 @@
 
 Boomtown is a full-stack application used to share and borrow items.
 
-### Technologies Used
+## Technologies Used
 
 **Server:** PostgreSQL, Node, Express, and GraphQL (Apollo).
+
 **Client:** React
 
 ## Server
