@@ -1,5 +1,12 @@
 # Boomtown 🏙
 
+Boomtown is a full-stack application used to share and borrow items.
+
+### Technologies Used
+
+**Server:** PostgreSQL, Node, Express, and GraphQL (Apollo).
+**Client:** React
+
 ## Server
 
 Commands must be run from the `server` directory:
@@ -12,9 +19,19 @@ npm install
 
 ### Run
 
+Development
+
 ```bash
 npm run start:dev
 ```
+
+Production
+
+```bash
+npm start
+```
+
+Retrieving data requires an active Postgres instance.
 
 ### Tests
 
@@ -89,5 +106,3 @@ Run all tests:
 ```bash
 npm run test
 ```
-
-
