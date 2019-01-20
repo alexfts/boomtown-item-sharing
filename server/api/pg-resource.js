@@ -17,15 +17,9 @@ const tagsQueryString = (tags, itemid) => {
   return result;
 };
 
-const insertItemTags = async (client, tags, item) => {
-  const qs = tagsQueryString(tags, item.id);
-  const insertItemTagsQuery = {
-    text: `INSERT INTO itemtags (tagid, itemid) VALUES ${qs}`,
-    values: tags.map(({ id }) => parseInt(id))
-  };
-  await client.query(insertItemTagsQuery);
-};
-
+/**
+ * Helper function to insert item into postgres as part of a transaction
+ */
 const insertItem = async (client, title, description) => {
   const insertItemQuery = {
     text: 'INSERT INTO items (title, description) VALUES ($1, $2) RETURNING *',
@@ -34,6 +28,18 @@ const insertItem = async (client, title, description) => {
 
   const insertItemResult = await client.query(insertItemQuery);
   return insertItemResult.rows[0];
+};
+
+/**
+ * Helper function to insert item tags into postgres as part of a transaction
+ */
+const insertItemTags = async (client, tags, item) => {
+  const qs = tagsQueryString(tags, item.id);
+  const insertItemTagsQuery = {
+    text: `INSERT INTO itemtags (tagid, itemid) VALUES ${qs}`,
+    values: tags.map(({ id }) => parseInt(id))
+  };
+  await client.query(insertItemTagsQuery);
 };
 
 module.exports = postgres => {
