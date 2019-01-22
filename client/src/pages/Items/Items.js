@@ -11,4 +11,3 @@ const Items = ({ classes }) => {
 };
 
 export default Items;
-
