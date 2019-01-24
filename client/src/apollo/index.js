@@ -6,11 +6,7 @@ import { onError } from 'apollo-link-error';
 
 const httpWithUploadsLink = createUploadLink({
   includeExtensions: true,
-  // @TODO: If `process.env.NODE_ENV !== 'production'`, then use localhost's GraphQL endpoint
-  uri:
-    process.env.NODE_ENV !== 'production'
-      ? 'localhost:3000/graphql'
-      : undefined,
+  uri: process.env.NODE_ENV !== 'production' && 'http://localhost:8080/graphql',
   credentials: process.env.NODE_ENV === 'production' ? 'same-origin' : 'include'
 });
 
