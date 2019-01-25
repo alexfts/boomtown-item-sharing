@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Gravatar from 'react-gravatar';
-import ItemCard from '../../components/ItemCard';
+import ItemGrid from '../../components/ItemGrid';
 
 const Profile = ({ classes, user }) => {
   if (!user) return <div />;
@@ -36,13 +36,7 @@ const Profile = ({ classes, user }) => {
 
       <Typography variant="headline">Shared Items</Typography>
 
-      <Grid container spacing={24}>
-        {user.items.map(item => (
-          <Grid item sm={4} key={item.id}>
-            <ItemCard classes={classes} item={item} />
-          </Grid>
-        ))}
-      </Grid>
+      <ItemGrid classes={classes} items={user.items} />
     </div>
   );
 };

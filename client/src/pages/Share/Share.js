@@ -1,4 +1,5 @@
 import React from 'react';
+import { Grid } from '@material-ui/core';
 /* 
   TODO: Create ShareItemFrom and ShareItemPreview in the components dir
   and call them from this file.
@@ -11,15 +12,23 @@ import React from 'react';
   Hint: It should look like any other Item card.
 
 */
-// import ShareItemForm from '../../components/ShareItemForm';
-// import ShareItemPreview from '../../components/ShareItemPreview';
+import ShareItemForm from '../../components/ShareItemForm';
+import ShareItemPreview from '../../components/ShareItemPreview';
 
-const Share = ({ classes }) => {
+const Share = ({ classes, tags }) => {
   return (
     <div>
       <p>
         This is the share page located at <code>/share</code>.
       </p>
+      <Grid container spacing={40} justify="space-around">
+        <Grid item>
+          <ShareItemPreview />
+        </Grid>
+        <Grid item>
+          <ShareItemForm tags={tags} />
+        </Grid>
+      </Grid>
     </div>
   );
 };
