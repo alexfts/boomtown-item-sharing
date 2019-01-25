@@ -68,7 +68,8 @@ class ShareItemForm extends Component {
                 )}
               />
 
-              <InputLabel htmlFor="select-multiple-checkbox">Tag</InputLabel>
+              <InputLabel htmlFor="select-multiple-checkbox">Tags</InputLabel>
+
               <Select
                 multiple
                 value={[]}
