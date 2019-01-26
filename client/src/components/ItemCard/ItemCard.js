@@ -5,50 +5,77 @@ import Card from '@material-ui/core/Card';
 //import CardActionArea from '@material-ui/core/CardActionArea';
 import Gravatar from 'react-gravatar';
 import CardActions from '@material-ui/core/CardActions';
+import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { Avatar, Grid } from '@material-ui/core';
+import { Avatar, Grid, ButtonBase } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 const styles = {
   card: {},
   media: {
-    height: 200
+    width: '100%',
+    overflow: 'hidden'
   },
-  avatar: {
+  avatarContainer: {
     paddingRight: 20
   },
   userInfo: {
     marginBottom: 20
+  },
+  avatar: {
+    height: '50px',
+    width: '50px'
+  },
+  title: {
+    marginTop: '30px',
+    marginBottom: '10px'
+  },
+  borrowButton: {
+    marginTop: '10px',
+    marginBottom: '15px',
+    backgroundColor: 'white',
+    border: '1px solid black',
+    boxShadow: 'none'
   }
 };
 
 const ItemCard = ({ classes, item }) => (
   <Card className={classes.card}>
-    <CardMedia className={classes.media} image={item.imageurl} />
+    <ButtonBase component={Link} to={`/profile/${item.itemowner.id}`}>
+      <div>
+        <img className={classes.media} src={item.imageurl} />
+        <Grid container className={classes.userInfo}>
+          <Grid item className={classes.avatarContainer}>
+            <Avatar className={classes.avatar}>
+              <Gravatar email={item.itemowner.email} />
+            </Avatar>
+          </Grid>
+          <Grid item>
+            <Typography variant="subtitle1">
+              {item.itemowner.fullname}
+            </Typography>
+            <Typography variant="caption"> {item.created} </Typography>
+          </Grid>
+        </Grid>
+      </div>
+    </ButtonBase>
+
     <CardContent>
-      <Grid container className={classes.userInfo}>
-        <Grid item className={classes.avatar}>
-          <Avatar>
-            <Gravatar email={item.itemowner.email} />
-          </Avatar>
-        </Grid>
-        <Grid item>
-          <Typography variant="subheading">
-            {item.itemowner.fullname}
-          </Typography>
-          <Typography variant="caption"> {item.created} </Typography>
-        </Grid>
-      </Grid>
-      <Typography variant="headline">{item.title}</Typography>
+      <Typography variant="h5" className={classes.title}>
+        {item.title}
+      </Typography>
       <Typography variant="caption">
         {item.tags.map(({ title }) => title).join(', ')}
       </Typography>
-      <Typography>{item.description}</Typography>
+      <Typography variant="body1">{item.description}</Typography>
     </CardContent>
     <CardActions>
-      <Button variant="contained">Borrow</Button>
+      <Button variant="contained" className={classes.borrowButton}>
+        Borrow
+      </Button>
     </CardActions>
   </Card>
 );
