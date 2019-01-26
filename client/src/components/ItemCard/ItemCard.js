@@ -14,7 +14,7 @@ import { Avatar, Grid } from '@material-ui/core';
 const styles = {
   card: {},
   media: {
-    minHeight: 160
+    height: 200
   },
   avatar: {
     paddingRight: 20
