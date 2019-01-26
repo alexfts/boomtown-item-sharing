@@ -4,11 +4,11 @@ import Items from '../pages/Items';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
 import Share from '../pages/Share';
-import Menu from '../components/Menu';
+import ControlBar from '../components/ControlBar';
 
 export default () => (
   <Fragment>
-    <Menu /> {/* @TODO display only when the path is not /welcome */}
+    <ControlBar /> {/* @TODO display only when the path is not /welcome */}
     <Switch>
       {/**
        * @TODO add logic to send users to one set of routes if they're logged in,
