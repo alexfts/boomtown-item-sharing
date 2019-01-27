@@ -5,8 +5,7 @@ const styles = {
   },
   shareButton: {
     position: 'fixed',
-    right: '100px',
-    boxShadow: 'none'
+    right: '100px'
   },
   logoButton: {
     position: 'fixed',

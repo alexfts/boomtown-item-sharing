@@ -17,10 +17,7 @@ import ShareItemPreview from '../../components/ShareItemPreview';
 
 const Share = ({ classes, tags }) => {
   return (
-    <div>
-      <p>
-        This is the share page located at <code>/share</code>.
-      </p>
+    <div className={classes.sharePage}>
       <Grid container spacing={40} justify="space-around">
         <Grid item>
           <ShareItemPreview />

@@ -8,7 +8,7 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-  Fab
+  Typography
 } from '@material-ui/core';
 import AddCircle from '@material-ui/icons/AddCircle';
 import MoreVert from '@material-ui/icons/MoreVert';
@@ -41,18 +41,15 @@ class ControlBar extends React.Component {
           <IconButton component={Link} to="/" className={classes.logoButton}>
             <img src={logo} alt="Boomtown" width="40" />
           </IconButton>
-          <Fab
-            variant="extended"
-            color="primary"
+          <Button
             aria-label="Add"
             component={Link}
             to="/share"
             className={classes.shareButton}
-            size="small"
           >
             <AddCircle color="secondary" className={classes.icon} />
-            Share something
-          </Fab>
+            <Typography color="secondary">Share something</Typography>
+          </Button>
           <div className={classes.menu}>
             <IconButton
               aria-owns={anchorEl ? 'simple-menu' : undefined}
