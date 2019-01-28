@@ -56,13 +56,7 @@ const ItemCard = ({ classes, item }) => (
     <ButtonBase component={Link} to={`/profile/${item.itemowner.id}`}>
       <div>
         <div className={classes.media}>
-          <img
-            className={classes.cardImg}
-            src={
-              item.imageurl ||
-              'http://via.placeholder.com/350x250?text=Please select an image'
-            }
-          />
+          <img className={classes.cardImg} src={item.imageurl} />
         </div>
         <Grid container className={classes.userInfo} alignItems="center">
           <Grid item className={classes.avatarContainer}>
@@ -92,11 +86,14 @@ const ItemCard = ({ classes, item }) => (
       </Typography>
       <Typography variant="body1">{item.description}</Typography>
     </CardContent>
-    <CardActions>
-      <Button variant="contained" className={classes.borrowButton}>
-        Borrow
-      </Button>
-    </CardActions>
+    {item.id &&
+      !item.borrower && (
+        <CardActions>
+          <Button variant="contained" className={classes.borrowButton}>
+            Borrow
+          </Button>
+        </CardActions>
+      )}
   </Card>
 );
 

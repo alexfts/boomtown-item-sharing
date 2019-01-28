@@ -4,15 +4,21 @@ import ItemCard from '../ItemCard';
 class ShareItemPreview extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      item: {
-        itemowner: {}
-      }
-    };
   }
 
   render() {
-    return <div>Preview</div>;
+    const item = {
+      imageurl:
+        'http://via.placeholder.com/500x250?text=Please select an image',
+      itemowner: {
+        fullname: 'Example',
+        email: 'example@example.com'
+      },
+      title: 'Name your item',
+      description: 'Describe your item',
+      tags: []
+    };
+    return <ItemCard item={item} />;
   }
 }
 

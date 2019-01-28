@@ -50,7 +50,11 @@ class ShareItemForm extends Component {
               spacing={24}
             >
               <Grid item>
-                <Typography variant="display1" color="secondary">
+                <Typography
+                  variant="display1"
+                  color="secondary"
+                  className={classes.title}
+                >
                   Share. Borrow. Prosper.{' '}
                 </Typography>
               </Grid>

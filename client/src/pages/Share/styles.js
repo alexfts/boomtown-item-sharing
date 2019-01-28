@@ -3,6 +3,10 @@ const styles = theme => ({
     backgroundColor: 'white',
     height: '100%',
     paddingTop: '150px'
+  },
+  shareComponent: {
+    marginLeft: '50px',
+    marginRight: '50px'
   }
 });
 
