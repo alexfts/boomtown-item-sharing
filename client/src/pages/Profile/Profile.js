@@ -34,10 +34,12 @@ const Profile = ({ classes, user }) => {
           <span className={classes.itemCount}>{numBorrowed + ' '}</span>{' '}
           {' ' + itemOrItems(numBorrowed) + ' borrowed.'}
         </Typography>
-        <Typography>"{user.bio}"</Typography>
+        <Typography variant="body1">"{user.bio}"</Typography>
       </Paper>
 
-      <Typography variant="headline">Shared Items</Typography>
+      <Typography variant="display1" color="primary" className={classes.title}>
+        Shared Items
+      </Typography>
 
       <ItemGrid classes={classes} items={user.items} />
     </div>

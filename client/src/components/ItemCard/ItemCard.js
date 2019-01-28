@@ -28,7 +28,7 @@ const styles = {
     paddingRight: 20
   },
   userInfo: {
-    marginTop: 10,
+    marginTop: 15,
     marginBottom: 20
   },
   avatar: {
@@ -39,7 +39,6 @@ const styles = {
     paddingBottom: '5px'
   },
   title: {
-    marginTop: '30px',
     marginBottom: '10px'
   },
   borrowButton: {
@@ -48,6 +47,9 @@ const styles = {
     backgroundColor: 'white',
     border: '1px solid black',
     boxShadow: 'none'
+  },
+  tags: {
+    marginBottom: '7px'
   }
 };
 
@@ -81,7 +83,7 @@ const ItemCard = ({ classes, item }) => (
       <Typography variant="headline" className={classes.title}>
         {item.title}
       </Typography>
-      <Typography variant="caption">
+      <Typography variant="caption" className={classes.tags}>
         {item.tags.map(({ title }) => title).join(', ')}
       </Typography>
       <Typography variant="body1">{item.description}</Typography>
@@ -98,11 +100,3 @@ const ItemCard = ({ classes, item }) => (
 );
 
 export default withStyles(styles)(ItemCard);
-
-// <Card className={classes.card}>
-// <CardMedia
-//   image="https://images.pexels.com/photos/127028/pexels-photo-127028.jpeg"
-//   title="Contemplative Reptile"
-// />
-//
-// </Card>
