@@ -5,11 +5,11 @@ const styles = {
   },
   shareButton: {
     position: 'fixed',
-    right: '100px'
+    right: '90px'
   },
   logoButton: {
     position: 'fixed',
-    left: '0px'
+    left: '10px'
   },
   icon: {
     marginRight: '10px'

@@ -66,7 +66,7 @@ class ShareItemForm extends Component {
                         type="file"
                         hidden
                       />
-                      <label htmlFor="file-upload-input" fullwidth>
+                      <label htmlFor="file-upload-input" fullwidth="true">
                         <Button
                           variant="contained"
                           component="span"

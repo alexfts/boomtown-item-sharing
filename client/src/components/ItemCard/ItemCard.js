@@ -12,22 +12,31 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Avatar, Grid, ButtonBase } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import countDaysAgo from './helpers/countDaysAgo';
 
 const styles = {
   card: {},
   media: {
-    width: '100%',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    height: '200px'
+  },
+  cardImg: {
+    width: '100%'
   },
   avatarContainer: {
+    paddingLeft: 20,
     paddingRight: 20
   },
   userInfo: {
+    marginTop: 10,
     marginBottom: 20
   },
   avatar: {
     height: '50px',
     width: '50px'
+  },
+  name: {
+    paddingBottom: '5px'
   },
   title: {
     marginTop: '30px',
@@ -46,25 +55,36 @@ const ItemCard = ({ classes, item }) => (
   <Card className={classes.card}>
     <ButtonBase component={Link} to={`/profile/${item.itemowner.id}`}>
       <div>
-        <img className={classes.media} src={item.imageurl} />
-        <Grid container className={classes.userInfo}>
+        <div className={classes.media}>
+          <img
+            className={classes.cardImg}
+            src={
+              item.imageurl ||
+              'http://via.placeholder.com/350x250?text=Please select an image'
+            }
+          />
+        </div>
+        <Grid container className={classes.userInfo} alignItems="center">
           <Grid item className={classes.avatarContainer}>
             <Avatar className={classes.avatar}>
               <Gravatar email={item.itemowner.email} />
             </Avatar>
           </Grid>
           <Grid item>
-            <Typography variant="subtitle1">
+            <Typography variant="subheading" className={classes.name}>
               {item.itemowner.fullname}
             </Typography>
-            <Typography variant="caption"> {item.created} </Typography>
+            <Typography variant="caption">
+              {' '}
+              {countDaysAgo(item.created)}{' '}
+            </Typography>
           </Grid>
         </Grid>
       </div>
     </ButtonBase>
 
     <CardContent>
-      <Typography variant="h5" className={classes.title}>
+      <Typography variant="headline" className={classes.title}>
         {item.title}
       </Typography>
       <Typography variant="caption">

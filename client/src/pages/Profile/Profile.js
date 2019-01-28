@@ -18,19 +18,22 @@ const Profile = ({ classes, user }) => {
   if (!user) return <div />;
   const numShared = user.items.length;
   const numBorrowed = user.borrowed.length;
-  const itemsOverview = num => (num === 1 ? `${num} Item` : `${num} Items`);
+  const itemOrItems = item => (item === 1 ? 'Item' : 'Items');
   return (
-    <div>
-      <Paper>
+    <div className={classes.profile}>
+      <Paper className={classes.paper}>
         <Grid container alignItems="center">
-          <Avatar>
+          <Avatar className={classes.avatar}>
             <Gravatar email={user.email} />
           </Avatar>
           <Typography variant="display2">{user.fullname}</Typography>
         </Grid>
-        <Typography variant="headline">{`${itemsOverview(
-          numShared
-        )} shared, ${itemsOverview(numBorrowed)} borrowed`}</Typography>
+        <Typography variant="headline" className={classes.itemsOverview}>
+          <span className={classes.itemCount}>{numShared}</span>{' '}
+          {' ' + itemOrItems(numShared) + ' shared, '}
+          <span className={classes.itemCount}>{numBorrowed + ' '}</span>{' '}
+          {' ' + itemOrItems(numBorrowed) + ' borrowed.'}
+        </Typography>
         <Typography>"{user.bio}"</Typography>
       </Paper>
 

@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
+import ItemCard from '../ItemCard';
 
 class ShareItemPreview extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      item: {
+        itemowner: {}
+      }
+    };
   }
 
   render() {
-    return (
-      <div>
-        <p>This is the share item preview.</p>
-      </div>
-    );
+    return <div>Preview</div>;
   }
 }
 
