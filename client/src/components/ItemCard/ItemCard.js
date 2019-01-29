@@ -18,14 +18,14 @@ const styles = {
   card: {},
   media: {
     overflow: 'hidden',
-    height: '200px'
+    height: '205px'
   },
   cardImg: {
     width: '100%'
   },
   avatarContainer: {
-    paddingLeft: 20,
-    paddingRight: 20
+    paddingLeft: '24px',
+    paddingRight: '16px'
   },
   userInfo: {
     marginTop: 15,
@@ -36,7 +36,8 @@ const styles = {
     width: '50px'
   },
   name: {
-    paddingBottom: '5px'
+    paddingBottom: '3px',
+    fontSize: '14px'
   },
   title: {
     marginBottom: '10px'
@@ -45,11 +46,18 @@ const styles = {
     marginTop: '10px',
     marginBottom: '15px',
     backgroundColor: 'white',
-    border: '1px solid black',
-    boxShadow: 'none'
+    border: '1px solid rgba(0, 0, 0, 0.23)',
+    boxShadow: 'none',
+    fontSize: '15px',
+    paddingLeft: '23px',
+    paddingRight: '23px'
   },
   tags: {
-    marginBottom: '7px'
+    marginBottom: '7px',
+    fontSize: '14px'
+  },
+  description: {
+    fontSize: '20px'
   }
 };
 
@@ -70,7 +78,7 @@ const ItemCard = ({ classes, item }) => (
             <Typography variant="subheading" className={classes.name}>
               {item.itemowner.fullname}
             </Typography>
-            <Typography variant="caption">
+            <Typography variant="caption" style={{ fontSize: '14px' }}>
               {' '}
               {countDaysAgo(item.created)}{' '}
             </Typography>
@@ -86,7 +94,9 @@ const ItemCard = ({ classes, item }) => (
       <Typography variant="caption" className={classes.tags}>
         {item.tags.map(({ title }) => title).join(', ')}
       </Typography>
-      <Typography variant="body1">{item.description}</Typography>
+      <Typography variant="body1" style={{ fontSize: '16px' }}>
+        {item.description}
+      </Typography>
     </CardContent>
     {item.id &&
       !item.borrower && (
@@ -98,5 +108,31 @@ const ItemCard = ({ classes, item }) => (
       )}
   </Card>
 );
+
+ItemCard.propTypes = {
+  item: PropTypes.shape({
+    title: PropTypes.string,
+    description: PropTypes.string,
+    imageurl: PropTypes.string,
+    tags: PropTypes.arrayOf(PropTypes.object),
+    itemowner: PropTypes.shape({
+      fullname: PropTypes.string,
+      email: PropTypes.string
+    })
+  })
+};
+
+ItemCard.defaultProps = {
+  item: {
+    imageurl: 'http://via.placeholder.com/500x250?text=Please select an image',
+    itemowner: {
+      fullname: 'Example',
+      email: 'example@example.com'
+    },
+    title: 'Name your item',
+    description: 'Describe your item',
+    tags: []
+  }
+};
 
 export default withStyles(styles)(ItemCard);

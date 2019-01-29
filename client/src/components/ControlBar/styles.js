@@ -1,18 +1,20 @@
 const styles = {
   menu: {
     position: 'fixed',
-    right: '25px'
+    right: '24px'
   },
   shareButton: {
     position: 'fixed',
-    right: '90px'
+    right: '88px',
+    borderRadius: '35px',
+    height: '50px'
   },
   logoButton: {
     position: 'fixed',
-    left: '10px'
+    left: '8px'
   },
   icon: {
-    marginRight: '10px'
+    marginRight: '8px'
   }
 };
 

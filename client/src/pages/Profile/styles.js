@@ -1,7 +1,7 @@
 const styles = theme => ({
   profile: {
     padding: `${theme.spacing.unit * 10}px`,
-    marginTop: 60,
+    paddingTop: `${theme.spacing.unit * 18}px`,
     backgroundColor: theme.palette.secondary.main
   },
   paper: {
@@ -18,10 +18,14 @@ const styles = theme => ({
   },
   itemsOverview: {
     marginTop: '15px',
-    marginBottom: '15px'
+    marginBottom: '15px',
+    fontSize: '21px'
   },
   title: {
     marginBottom: '20px'
+  },
+  name: {
+    fontSize: '44px'
   }
 });
 

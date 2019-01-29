@@ -13,6 +13,7 @@ import {
 import Typography from '@material-ui/core/Typography';
 import Gravatar from 'react-gravatar';
 import ItemGrid from '../../components/ItemGrid';
+import PropTypes from 'prop-types';
 
 const Profile = ({ classes, user }) => {
   if (!user) return <div />;
@@ -26,7 +27,9 @@ const Profile = ({ classes, user }) => {
           <Avatar className={classes.avatar}>
             <Gravatar email={user.email} />
           </Avatar>
-          <Typography variant="display2">{user.fullname}</Typography>
+          <Typography variant="display2" className={classes.name}>
+            {user.fullname}
+          </Typography>
         </Grid>
         <Typography variant="headline" className={classes.itemsOverview}>
           <span className={classes.itemCount}>{numShared}</span>{' '}
@@ -41,9 +44,19 @@ const Profile = ({ classes, user }) => {
         Shared Items
       </Typography>
 
-      <ItemGrid classes={classes} items={user.items} />
+      <ItemGrid items={user.items} />
     </div>
   );
+};
+
+Profile.propTypes = {
+  user: PropTypes.shape({
+    bio: PropTypes.string,
+    email: PropTypes.string,
+    fullname: PropTypes.string,
+    items: PropTypes.arrayOf(PropTypes.object),
+    borrowed: PropTypes.arrayOf(PropTypes.object)
+  }).isRequired
 };
 
 export default Profile;

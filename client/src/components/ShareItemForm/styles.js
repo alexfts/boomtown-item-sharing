@@ -4,6 +4,9 @@ const styles = theme => ({
   },
   title: {
     weight: 600
+  },
+  dialogTitle: {
+    display: 'flex'
   }
 });
 

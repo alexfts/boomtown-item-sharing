@@ -39,7 +39,7 @@ class ControlBar extends React.Component {
       <AppBar>
         <Toolbar position="static">
           <IconButton component={Link} to="/" className={classes.logoButton}>
-            <img src={logo} alt="Boomtown" width="40" />
+            <img src={logo} alt="Boomtown" width="40px" height="48px" />
           </IconButton>
           <Button
             aria-label="Add"
@@ -48,7 +48,13 @@ class ControlBar extends React.Component {
             className={classes.shareButton}
           >
             <AddCircle color="secondary" className={classes.icon} />
-            <Typography color="secondary">Share something</Typography>
+            <Typography
+              color="secondary"
+              variant="button"
+              style={{ fontSize: '13px' }}
+            >
+              Share something
+            </Typography>
           </Button>
           <div className={classes.menu}>
             <IconButton
