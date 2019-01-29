@@ -161,16 +161,31 @@ class ShareItemForm extends Component {
                           onChange={this.handleSelectFile}
                           hidden
                         />
-                        <label htmlFor="file-upload-input" fullwidth="true">
+                        {!this.state.fileSelected ? (
+                          <label htmlFor="file-upload-input" fullwidth="true">
+                            <Button
+                              variant="contained"
+                              component="span"
+                              color="primary"
+                              className={classes.formItem}
+                            >
+                              Select an image
+                            </Button>
+                          </label>
+                        ) : (
                           <Button
                             variant="contained"
                             component="span"
-                            color="primary"
                             className={classes.formItem}
+                            onClick={() => {
+                              this.fileInput.current.value = '';
+                              this.setState({ fileSelected: null });
+                              resetImage();
+                            }}
                           >
-                            Select an image
+                            Reset image
                           </Button>
-                        </label>
+                        )}
                       </Fragment>
                     )}
                   />
@@ -179,11 +194,7 @@ class ShareItemForm extends Component {
                   <Field
                     name="title"
                     render={({ input, meta }) => (
-                      <TextField
-                        inputProps={input}
-                        placeholder="Name your item"
-                        fullWidth
-                      />
+                      <TextField {...input} label="Name your item" fullWidth />
                     )}
                   />
                 </Grid>
@@ -192,7 +203,7 @@ class ShareItemForm extends Component {
                     name="description"
                     render={({ input, meta }) => (
                       <TextField
-                        inputProps={input}
+                        {...input}
                         placeholder="Describe your item"
                         multiline
                         rows="4"
