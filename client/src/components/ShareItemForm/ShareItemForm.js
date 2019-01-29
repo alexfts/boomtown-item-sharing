@@ -17,21 +17,66 @@ import {
   DialogContentText,
   DialogActions
 } from '@material-ui/core';
-import { Form, Field } from 'react-final-form';
+import { Form, Field, FormSpy } from 'react-final-form';
 import { withStyles } from '@material-ui/core/styles';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 import CloudDone from '@material-ui/icons/CloudDone';
 import { Link } from 'react-router-dom';
 import styles from './styles';
+import {
+  updateItem,
+  resetItem,
+  resetImage
+} from '../../redux/modules/ShareItem';
+import { connect } from 'react-redux';
 
 class ShareItemForm extends Component {
   constructor(props) {
     super(props);
+    this.fileInput = React.createRef();
     this.state = {
       checked: [],
-      submitted: false
+      submitted: false,
+      fileSelected: null
     };
   }
+
+  getBase64Url = () => {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        resolve(
+          `data:${this.state.fileSelected.type};base64, ${btoa(
+            e.target.result
+          )}`
+        );
+      };
+      reader.readAsBinaryString(this.state.fileSelected);
+    });
+  };
+
+  applyTags = tags => {
+    return (
+      tags &&
+      tags
+        .filter(t => this.state.checked.indexOf(t.title) > -1)
+        .map(t => ({ title: t.title, id: t.id }))
+    );
+  };
+
+  dispatchUpdate = (values, tags, updateNewItem) => {
+    if (!values.imageurl && this.state.fileSelected) {
+      this.getBase64Url().then(imageurl => {
+        updateNewItem({
+          imageurl
+        });
+      });
+    }
+    updateNewItem({
+      ...values,
+      tags: this.applyTags(tags)
+    });
+  };
 
   onSubmit = values => {
     console.log(values);
@@ -39,8 +84,12 @@ class ShareItemForm extends Component {
     this.setState({ submitted: true });
   };
 
-  handleChange = event => {
+  handleSelectTags = event => {
     this.setState({ checked: event.target.value });
+  };
+
+  handleSelectFile = event => {
+    this.setState({ fileSelected: this.fileInput.current.files[0] });
   };
 
   closeModal = () => {
@@ -48,8 +97,22 @@ class ShareItemForm extends Component {
     // @TODO clear form
   };
 
+  generateTagsText = (tags, selected) => {
+    return tags
+      .map(t => (selected.indexOf(t.id) > -1 ? t.title : false))
+      .filter(e => e)
+      .join(', ');
+  };
+
   render() {
-    const { classes, tags, fullScreen } = this.props;
+    const {
+      classes,
+      tags,
+      fullScreen,
+      updateItem,
+      resetItem,
+      resetImage
+    } = this.props;
     const tagNames = tags.map(({ title }) => title);
 
     return (
@@ -58,6 +121,16 @@ class ShareItemForm extends Component {
           onSubmit={this.onSubmit}
           render={({ handleSubmit }) => (
             <form onSubmit={handleSubmit}>
+              <FormSpy
+                subscription={{ values: true }}
+                component={({ values }) => {
+                  if (values) {
+                    console.log('VALUES', values);
+                    this.dispatchUpdate(values, tags, updateItem);
+                  }
+                  return '';
+                }}
+              />
               <Grid
                 container
                 direction="column"
@@ -76,7 +149,7 @@ class ShareItemForm extends Component {
                 </Grid>
                 <Grid item>
                   <Field
-                    name="image"
+                    name="imageurl"
                     render={({ input, meta }) => (
                       <Fragment>
                         <input
@@ -84,6 +157,8 @@ class ShareItemForm extends Component {
                           accept="image/*"
                           id="file-upload-input"
                           type="file"
+                          ref={this.fileInput}
+                          onChange={this.handleSelectFile}
                           hidden
                         />
                         <label htmlFor="file-upload-input" fullwidth="true">
@@ -102,7 +177,7 @@ class ShareItemForm extends Component {
                 </Grid>
                 <Grid item>
                   <Field
-                    name="name"
+                    name="title"
                     render={({ input, meta }) => (
                       <TextField
                         inputProps={input}
@@ -134,7 +209,7 @@ class ShareItemForm extends Component {
                     <Select
                       multiple
                       value={this.state.checked}
-                      onChange={this.handleChange}
+                      onChange={this.handleSelectTags}
                       input={<Input id="select-multiple-checkbox" />}
                       renderValue={selected => selected.join(', ')}
                     >
@@ -190,4 +265,13 @@ class ShareItemForm extends Component {
   }
 }
 
-export default withMobileDialog()(withStyles(styles)(ShareItemForm));
+const mapDispatchToProps = dispatch => ({
+  updateItem: item => dispatch(updateItem(item)),
+  resetItem: () => dispatch(resetItem()),
+  resetImage: () => dispatch(resetImage())
+});
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(withMobileDialog()(withStyles(styles)(ShareItemForm)));
