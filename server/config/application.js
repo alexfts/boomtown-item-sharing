@@ -19,6 +19,8 @@ module.exports = app => {
   app.set('PG_USER', process.env.PG_USER || 'boomtown');
   app.set('PG_PASSWORD', process.env.PG_USER || 'boomtown');
   app.set('PG_DB', process.env.PG_USER || 'boomtown');
+  app.set('JWT_COOKIE_NAME', 'session');
+  app.set('JWT_SECRET', process.env.JWT_SECRET || 'boomtown');
 
   app.use(cookieParser());
 

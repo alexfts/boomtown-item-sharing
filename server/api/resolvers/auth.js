@@ -17,10 +17,11 @@ function setCookie({ tokenName, token, res }) {
    *  3) A boomtown cookie should oly be valid for 2 hours.
    */
   // Refactor this method with the correct configuration values.
+  console.log('cookie');
   res.cookie(tokenName, token, {
-    // @TODO: Supply the correct configuration values for our cookie here
+    maxAge: 1000 * 60 * 120,
+    httpOnly: true
   });
-  // -------------------------------
 }
 
 function generateToken(user, secret) {
@@ -35,13 +36,14 @@ function generateToken(user, secret) {
    *  which can be decoded using the app secret to retrieve the stateless session.
    */
   // Refactor this return statement to return the cryptographic hash (the Token)
-  return '';
+  return jwt.sign(user, secret);
   // -------------------------------
 }
 
-module.exports = (app) => {
+module.exports = app => {
   return {
     async signup(parent, args, context) {
+      console.log(args.user);
       try {
         /**
          * @TODO: Authentication - Server
@@ -53,9 +55,8 @@ module.exports = (app) => {
          * The solution is to create a cryptographic hash of the password provided,
          * and store that instead. The password can be decoded using the original password.
          */
-        // @TODO: Use bcrypt to generate a cryptographic hash to conceal the user's password before storing it.
-        const hashedPassword = '';
-        // -------------------------------
+
+        const hashedPassword = await bcrypt.hash(args.user.password, 10);
 
         const user = await context.pgResource.createUser({
           fullname: args.user.fullname,
@@ -69,9 +70,7 @@ module.exports = (app) => {
           res: context.req.res
         });
 
-        return {
-          id: user.id
-        };
+        return user;
       } catch (e) {
         throw new AuthenticationError(e);
       }
@@ -100,9 +99,7 @@ module.exports = (app) => {
           res: context.req.res
         });
 
-        return {
-          id: user.id
-        };
+        return user;
       } catch (e) {
         throw new AuthenticationError(e);
       }

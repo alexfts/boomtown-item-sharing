@@ -23,6 +23,7 @@ module.exports = ({ app, pgResource }) => {
         /**
          * @TODO: add tokenName and token to Apollo's context
          */
+        req,
         pgResource
       };
     },
