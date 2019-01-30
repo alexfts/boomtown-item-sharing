@@ -6,7 +6,11 @@ const styles = theme => ({
   },
   paper: {
     padding: `${theme.spacing.unit * 6}px`,
-    marginBottom: '50px'
+    marginBottom: '48px'
+  },
+  bio: {
+    fontSize: '16px',
+    marginBottom: '32px'
   },
   avatar: {
     height: '50px',
@@ -18,11 +22,11 @@ const styles = theme => ({
   },
   itemsOverview: {
     marginTop: '15px',
-    marginBottom: '15px',
+    marginBottom: '5px',
     fontSize: '21px'
   },
   title: {
-    marginBottom: '20px'
+    marginBottom: '12px'
   },
   name: {
     fontSize: '44px'

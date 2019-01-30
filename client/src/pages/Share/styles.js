@@ -5,8 +5,8 @@ const styles = theme => ({
     paddingTop: '150px'
   },
   shareComponent: {
-    marginLeft: '50px',
-    marginRight: '50px'
+    paddingLeft: '25px',
+    paddingRight: '25px'
   }
 });
 

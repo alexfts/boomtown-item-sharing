@@ -37,7 +37,9 @@ const Profile = ({ classes, user }) => {
           <span className={classes.itemCount}>{numBorrowed + ' '}</span>{' '}
           {' ' + itemOrItems(numBorrowed) + ' borrowed.'}
         </Typography>
-        <Typography variant="body1">"{user.bio}"</Typography>
+        <Typography variant="body1" className={classes.bio}>
+          "{user.bio}"
+        </Typography>
       </Paper>
 
       <Typography variant="display1" color="primary" className={classes.title}>

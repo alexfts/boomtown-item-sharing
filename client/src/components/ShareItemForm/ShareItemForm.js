@@ -29,6 +29,9 @@ import {
   resetImage
 } from '../../redux/modules/ShareItem';
 import { connect } from 'react-redux';
+import validate from './helpers/validation';
+import { ADD_ITEM_MUTATION } from '../../apollo/queries';
+import { Mutation } from 'react-apollo';
 
 class ShareItemForm extends Component {
   constructor(props) {
@@ -78,10 +81,14 @@ class ShareItemForm extends Component {
     });
   };
 
-  onSubmit = values => {
-    console.log(values);
-    console.log(this.state.checked);
+  onSubmit = (values, addItem) => {
     this.setState({ submitted: true });
+    const item = {
+      title: values.title,
+      description: values.description,
+      tags: this.applyTags(this.props.tags)
+    };
+    addItem({ variables: { item } });
   };
 
   handleSelectTags = event => {
@@ -92,9 +99,9 @@ class ShareItemForm extends Component {
     this.setState({ fileSelected: this.fileInput.current.files[0] });
   };
 
-  closeModal = () => {
+  closeModal = clearForm => {
     this.setState({ submitted: false });
-    // @TODO clear form
+    clearForm();
   };
 
   generateTagsText = (tags, selected) => {
@@ -116,162 +123,224 @@ class ShareItemForm extends Component {
     const tagNames = tags.map(({ title }) => title);
 
     return (
-      <div>
-        <Form
-          onSubmit={this.onSubmit}
-          render={({ handleSubmit }) => (
-            <form onSubmit={handleSubmit}>
-              <FormSpy
-                subscription={{ values: true }}
-                component={({ values }) => {
-                  if (values) {
-                    console.log('VALUES', values);
-                    this.dispatchUpdate(values, tags, updateItem);
-                  }
-                  return '';
-                }}
-              />
-              <Grid
-                container
-                direction="column"
-                alignItems="stretch"
-                justify="space-between"
-                spacing={24}
-              >
-                <Grid item>
-                  <Typography
-                    variant="display1"
-                    color="secondary"
-                    className={classes.title}
-                  >
-                    Share. Borrow. Prosper.{' '}
-                  </Typography>
-                </Grid>
-                <Grid item>
-                  <Field
-                    name="imageurl"
-                    render={({ input, meta }) => (
-                      <Fragment>
-                        <input
-                          {...input}
-                          accept="image/*"
-                          id="file-upload-input"
-                          type="file"
-                          ref={this.fileInput}
-                          onChange={this.handleSelectFile}
-                          hidden
-                        />
-                        {!this.state.fileSelected ? (
-                          <label htmlFor="file-upload-input" fullwidth="true">
-                            <Button
-                              variant="contained"
-                              component="span"
-                              color="primary"
-                              className={classes.formItem}
-                            >
-                              Select an image
-                            </Button>
-                          </label>
-                        ) : (
-                          <Button
-                            variant="contained"
-                            component="span"
-                            className={classes.formItem}
-                            onClick={() => {
-                              this.fileInput.current.value = '';
-                              this.setState({ fileSelected: null });
-                              resetImage();
-                            }}
-                          >
-                            Reset image
-                          </Button>
-                        )}
-                      </Fragment>
-                    )}
-                  />
-                </Grid>
-                <Grid item>
-                  <Field
-                    name="title"
-                    render={({ input, meta }) => (
-                      <TextField {...input} label="Name your item" fullWidth />
-                    )}
-                  />
-                </Grid>
-                <Grid item>
-                  <Field
-                    name="description"
-                    render={({ input, meta }) => (
-                      <TextField
-                        {...input}
-                        placeholder="Describe your item"
-                        multiline
-                        rows="4"
-                        fullWidth
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor="select-multiple-checkbox">
-                      Tags
-                    </InputLabel>
-                    <Select
-                      multiple
-                      value={this.state.checked}
-                      onChange={this.handleSelectTags}
-                      input={<Input id="select-multiple-checkbox" />}
-                      renderValue={selected => selected.join(', ')}
+      <Mutation mutation={ADD_ITEM_MUTATION}>
+        {(addItem, { data }) => (
+          <div>
+            <Form
+              onSubmit={values => this.onSubmit(values, addItem)}
+              validate={values => {
+                return validate(
+                  values,
+                  this.state.checked,
+                  this.state.fileSelected
+                );
+              }}
+              render={({ handleSubmit, pristine, submitting, invalid }) => {
+                return (
+                  <form onSubmit={handleSubmit}>
+                    <FormSpy
+                      subscription={{ values: true }}
+                      component={({ values }) => {
+                        if (values) {
+                          this.dispatchUpdate(values, tags, updateItem);
+                        }
+                        return '';
+                      }}
+                    />
+                    <Grid
+                      container
+                      direction="column"
+                      alignItems="stretch"
+                      justify="space-between"
+                      spacing={24}
                     >
-                      {tags.map(tag => (
-                        <MenuItem key={tag.id} value={tag.title}>
-                          <Checkbox
-                            checked={this.state.checked.indexOf(tag.title) > -1}
-                          />
-                          <ListItemText primary={tag.title} />
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item>
-                  <Button variant="contained" color="primary" type="submit">
-                    Share{' '}
-                  </Button>
-                </Grid>
-              </Grid>
-            </form>
-          )}
-        />
-        <Dialog
-          fullScreen={fullScreen}
-          open={this.state.submitted}
-          onClose={this.closeModal}
-          aria-labelledby="responsive-dialog-title"
-        >
-          <DialogTitle id="responsive-dialog-title">
-            <div>
-              <CloudDone />
-            </div>
-            {'Your item was added!'}
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              You may add another item if you like. To add another item click
-              'Add another item'. To view your item, click 'Back to items page'.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={this.closeModal} color="primary">
-              Add another item
-            </Button>
-            <Button component={Link} to="/" color="secondary" autoFocus>
-              Back to items page
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </div>
+                      <Grid item>
+                        <Typography
+                          variant="display1"
+                          color="secondary"
+                          className={classes.title}
+                        >
+                          Share. Borrow. Prosper.
+                        </Typography>
+                      </Grid>
+                      <Grid item>
+                        <Field
+                          name="imageurl"
+                          render={({ input, meta }) => (
+                            <Fragment>
+                              <input
+                                {...input}
+                                accept="image/*"
+                                id="file-upload-input"
+                                type="file"
+                                ref={this.fileInput}
+                                onChange={this.handleSelectFile}
+                                hidden
+                              />
+
+                              {meta.touched &&
+                                meta.invalid && (
+                                  <div
+                                    className="error"
+                                    style={{ color: 'red' }}
+                                  >
+                                    {meta.error}
+                                  </div>
+                                )}
+                              {!this.state.fileSelected ? (
+                                <label
+                                  htmlFor="file-upload-input"
+                                  fullwidth="true"
+                                >
+                                  <Button
+                                    variant="contained"
+                                    component="span"
+                                    color="primary"
+                                    className={classes.formItem}
+                                  >
+                                    Select an image
+                                  </Button>
+                                </label>
+                              ) : (
+                                <Button
+                                  variant="contained"
+                                  component="span"
+                                  className={classes.formItem}
+                                  onClick={() => {
+                                    this.fileInput.current.value = '';
+                                    this.setState({ fileSelected: null });
+                                    resetImage();
+                                  }}
+                                >
+                                  Reset image
+                                </Button>
+                              )}
+                            </Fragment>
+                          )}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <Field
+                          name="title"
+                          render={({ input, meta }) => (
+                            <Fragment>
+                              <TextField
+                                {...input}
+                                label="Name your item"
+                                fullWidth
+                              />
+                              {meta.touched &&
+                                meta.invalid && (
+                                  <div
+                                    className="error"
+                                    style={{ color: 'red' }}
+                                  >
+                                    {meta.error}
+                                  </div>
+                                )}
+                            </Fragment>
+                          )}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <Field
+                          name="description"
+                          render={({ input, meta }) => (
+                            <Fragment>
+                              <TextField
+                                {...input}
+                                placeholder="Describe your item"
+                                multiline
+                                rows="4"
+                                fullWidth
+                              />
+                              {meta.touched &&
+                                meta.invalid && (
+                                  <div
+                                    className="error"
+                                    style={{ color: 'red' }}
+                                  >
+                                    {meta.error}
+                                  </div>
+                                )}
+                            </Fragment>
+                          )}
+                        />
+                      </Grid>
+                      <Grid item>
+                        <FormControl fullWidth>
+                          <InputLabel htmlFor="select-multiple-checkbox">
+                            Tags
+                          </InputLabel>
+                          <Select
+                            multiple
+                            value={this.state.checked}
+                            onChange={this.handleSelectTags}
+                            input={<Input id="select-multiple-checkbox" />}
+                            renderValue={selected => selected.join(', ')}
+                          >
+                            {tags.map(tag => (
+                              <MenuItem key={tag.id} value={tag.title}>
+                                <Checkbox
+                                  checked={
+                                    this.state.checked.indexOf(tag.title) > -1
+                                  }
+                                />
+                                <ListItemText primary={tag.title} />
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid item>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          type="submit"
+                          disabled={pristine || submitting || invalid}
+                        >
+                          Share
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </form>
+                );
+              }}
+            />
+            <Dialog
+              fullScreen={fullScreen}
+              open={this.state.submitted}
+              onClose={() => this.closeModal(resetItem)}
+              aria-labelledby="responsive-dialog-title"
+            >
+              <DialogTitle id="responsive-dialog-title">
+                <div>
+                  <CloudDone />
+                </div>
+                {'Your item was added!'}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  You may add another item if you like. To add another item
+                  click 'Add another item'. To view your item, click 'Back to
+                  items page'.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={() => this.closeModal(resetItem)}
+                  color="primary"
+                >
+                  Add another item
+                </Button>
+                <Button component={Link} to="/" color="secondary" autoFocus>
+                  Back to items page
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </div>
+        )}
+      </Mutation>
     );
   }
 }

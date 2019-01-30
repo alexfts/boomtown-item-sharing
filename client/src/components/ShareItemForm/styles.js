@@ -3,10 +3,8 @@ const styles = theme => ({
     width: '100%'
   },
   title: {
-    weight: 600
-  },
-  dialogTitle: {
-    display: 'flex'
+    fontWeight: 600,
+    fontSize: '44px'
   }
 });
 
