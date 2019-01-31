@@ -19,6 +19,8 @@ import logo from '../../images/boomtown.svg';
 import { withStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router';
 import styles from './styles';
+import { LOGOUT_MUTATION, VIEWER_QUERY } from '../../apollo/queries';
+import { graphql, compose } from 'react-apollo';
 
 class ControlBar extends React.Component {
   state = {
@@ -34,73 +36,87 @@ class ControlBar extends React.Component {
   };
 
   render() {
-    const { classes, items, location } = this.props;
+    const { classes, items, location, logoutMutation } = this.props;
     const { anchorEl } = this.state;
     return (
-      location.pathname !== '/welcome' && (
-        <AppBar>
-          <Toolbar position="static">
-            <IconButton component={Link} to="/" className={classes.logoButton}>
-              <img src={logo} alt="Boomtown" width="40px" height="48px" />
+      <AppBar>
+        <Toolbar position="static">
+          <IconButton component={Link} to="/" className={classes.logoButton}>
+            <img src={logo} alt="Boomtown" width="40px" height="48px" />
+          </IconButton>
+          {location.pathname !== '/share' && (
+            <Button
+              aria-label="Add"
+              component={Link}
+              to="/share"
+              className={classes.shareButton}
+            >
+              <AddCircle color="secondary" className={classes.icon} />
+              <Typography
+                color="secondary"
+                variant="button"
+                style={{ fontSize: '13px' }}
+              >
+                Share something
+              </Typography>
+            </Button>
+          )}
+          <div className={classes.menu}>
+            <IconButton
+              aria-owns={anchorEl ? 'simple-menu' : undefined}
+              aria-haspopup="true"
+              onClick={this.handleClick}
+            >
+              <MoreVert />
             </IconButton>
-            {location.pathname !== '/share' && (
-              <Button
-                aria-label="Add"
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={this.handleClose}
+            >
+              <MenuItem
                 component={Link}
-                to="/share"
-                className={classes.shareButton}
+                to="/profile"
+                onClick={this.handleClose}
               >
-                <AddCircle color="secondary" className={classes.icon} />
-                <Typography
-                  color="secondary"
-                  variant="button"
-                  style={{ fontSize: '13px' }}
-                >
-                  Share something
-                </Typography>
-              </Button>
-            )}
-            <div className={classes.menu}>
-              <IconButton
-                aria-owns={anchorEl ? 'simple-menu' : undefined}
-                aria-haspopup="true"
-                onClick={this.handleClick}
+                <ListItemIcon>
+                  <Fingerprint />
+                </ListItemIcon>
+                <ListItemText inset primary="Your Profile" />
+              </MenuItem>
+              <MenuItem
+                onClick={() => {
+                  this.handleClose();
+                  logoutMutation();
+                }}
               >
-                <MoreVert />
-              </IconButton>
-              <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={this.handleClose}
-              >
-                <MenuItem
-                  component={Link}
-                  to="/profile"
-                  onClick={this.handleClose}
-                >
-                  <ListItemIcon>
-                    <Fingerprint />
-                  </ListItemIcon>
-                  <ListItemText inset primary="Your Profile" />
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="/welcome"
-                  onClick={this.handleClose}
-                >
-                  <ListItemIcon>
-                    <PowerSettingsNew />
-                  </ListItemIcon>
-                  <ListItemText inset primary="Sign Out" />
-                </MenuItem>
-              </Menu>
-            </div>
-          </Toolbar>
-        </AppBar>
-      )
+                <ListItemIcon>
+                  <PowerSettingsNew />
+                </ListItemIcon>
+                <ListItemText inset primary="Sign Out" />
+              </MenuItem>
+            </Menu>
+          </div>
+        </Toolbar>
+      </AppBar>
     );
   }
 }
 
-export default withRouter(withStyles(styles)(ControlBar));
+const refetchQueries = [
+  {
+    query: VIEWER_QUERY
+  }
+];
+
+export default compose(
+  graphql(LOGOUT_MUTATION, {
+    options: {
+      refetchQueries
+    },
+    name: 'logoutMutation'
+  }),
+  withStyles(styles),
+  withRouter
+)(ControlBar);

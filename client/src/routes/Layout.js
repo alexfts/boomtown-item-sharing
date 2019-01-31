@@ -10,19 +10,22 @@ import FullScreenLoader from '../components/FullScreenLoader';
 
 export default () => (
   <Fragment>
-    <ControlBar />
     <ViewerContext.Consumer>
       {({ viewer, loading }) => {
-        if (loading) return FullScreenLoader;
+        if (loading) return <FullScreenLoader />;
         if (viewer) {
           return (
-            <Switch>
-              <Route exact path="/items" component={Items} />
-              <Route exact path="/profile" component={Profile} />
-              <Route exact path="/profile/:userid" component={Profile} />
-              <Route exact path="/share" component={Share} />
-              <Redirect to="/items" />
-            </Switch>
+            <Fragment>
+              <ControlBar />
+
+              <Switch>
+                <Route exact path="/items" component={Items} />
+                <Route exact path="/profile" component={Profile} />
+                <Route exact path="/profile/:userid" component={Profile} />
+                <Route exact path="/share" component={Share} />
+                <Redirect to="/items" />
+              </Switch>
+            </Fragment>
           );
         } else {
           return (
