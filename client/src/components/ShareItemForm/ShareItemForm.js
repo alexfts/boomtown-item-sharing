@@ -88,7 +88,7 @@ class ShareItemForm extends Component {
       description: values.description,
       tags: this.applyTags(this.props.tags)
     };
-    addItem({ variables: { item } });
+    addItem({ variables: { item, image: this.state.fileSelected } });
   };
 
   handleSelectTags = event => {
@@ -99,11 +99,19 @@ class ShareItemForm extends Component {
     this.setState({ fileSelected: this.fileInput.current.files[0] });
   };
 
-  closeModal = clearForm => {
-    this.setState({ submitted: false });
-    clearForm();
+  closeModal = form => {
+    this.setState({ submitted: false, checked: [] });
+    console.log('RESET ITEM', this.props.resetItem);
+    form.reset();
+    this.clearSelectedFile();
+    this.props.resetItem();
   };
 
+  clearSelectedFile = () => {
+    this.fileInput.current.value = '';
+    this.setState({ fileSelected: null });
+    this.props.resetImage();
+  };
   generateTagsText = (tags, selected) => {
     return tags
       .map(t => (selected.indexOf(t.id) > -1 ? t.title : false))
@@ -135,7 +143,13 @@ class ShareItemForm extends Component {
                   this.state.fileSelected
                 );
               }}
-              render={({ handleSubmit, pristine, submitting, invalid }) => {
+              render={({
+                handleSubmit,
+                form,
+                pristine,
+                submitting,
+                invalid
+              }) => {
                 return (
                   <form onSubmit={handleSubmit}>
                     <FormSpy
@@ -206,11 +220,7 @@ class ShareItemForm extends Component {
                                   variant="contained"
                                   component="span"
                                   className={classes.formItem}
-                                  onClick={() => {
-                                    this.fileInput.current.value = '';
-                                    this.setState({ fileSelected: null });
-                                    resetImage();
-                                  }}
+                                  onClick={this.clearSelectedFile}
                                 >
                                   Reset image
                                 </Button>
@@ -303,41 +313,46 @@ class ShareItemForm extends Component {
                         </Button>
                       </Grid>
                     </Grid>
+                    <Dialog
+                      fullScreen={fullScreen}
+                      open={this.state.submitted}
+                      onClose={() => this.closeModal(form)}
+                      aria-labelledby="responsive-dialog-title"
+                    >
+                      <DialogTitle id="responsive-dialog-title">
+                        <div>
+                          <CloudDone />
+                        </div>
+                        {'Your item was added!'}
+                      </DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>
+                          You may add another item if you like. To add another
+                          item click 'Add another item'. To view your item,
+                          click 'Back to items page'.
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button
+                          onClick={() => this.closeModal(form)}
+                          color="primary"
+                        >
+                          Add another item
+                        </Button>
+                        <Button
+                          component={Link}
+                          to="/"
+                          color="secondary"
+                          autoFocus
+                        >
+                          Back to items page
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
                   </form>
                 );
               }}
             />
-            <Dialog
-              fullScreen={fullScreen}
-              open={this.state.submitted}
-              onClose={() => this.closeModal(resetItem)}
-              aria-labelledby="responsive-dialog-title"
-            >
-              <DialogTitle id="responsive-dialog-title">
-                <div>
-                  <CloudDone />
-                </div>
-                {'Your item was added!'}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  You may add another item if you like. To add another item
-                  click 'Add another item'. To view your item, click 'Back to
-                  items page'.
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={() => this.closeModal(resetItem)}
-                  color="primary"
-                >
-                  Add another item
-                </Button>
-                <Button component={Link} to="/" color="secondary" autoFocus>
-                  Back to items page
-                </Button>
-              </DialogActions>
-            </Dialog>
           </div>
         )}
       </Mutation>

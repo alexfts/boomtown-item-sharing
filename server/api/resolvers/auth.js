@@ -17,7 +17,6 @@ function setCookie({ tokenName, token, res }) {
    *  3) A boomtown cookie should oly be valid for 2 hours.
    */
   // Refactor this method with the correct configuration values.
-  console.log('cookie');
   res.cookie(tokenName, token, {
     maxAge: 1000 * 60 * 120,
     httpOnly: true
@@ -82,17 +81,7 @@ module.exports = app => {
         const user = await context.pgResource.getUserAndPasswordForVerification(
           args.user.email
         );
-
-        /**
-         *  @TODO: Authentication - Server
-         *
-         *  To verify the user has provided the correct password, we'll use the provided password
-         *  they submitted from the login form to decrypt the 'hashed' version stored in out database.
-         */
-        // Use bcrypt to compare the provided password to 'hashed' password stored in your database.
         const valid = await bcrypt.compare(args.user.password, user.password);
-        console.log(valid);
-        // -------------------------------
         if (!valid || !user) throw 'User was not found.';
 
         setCookie({

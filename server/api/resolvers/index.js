@@ -107,10 +107,8 @@ module.exports = app => {
     },
 
     Mutation: {
-      // @TODO: Uncomment this later when we add auth
       ...authMutations(app),
-      // -------------------------------
-      async addItem(parent, { item }, { pgResource }, info) {
+      async addItem(parent, { item }, { pgResource, req }, info) {
         // @TODO add image and user
         // image = await image;
         // const user = await jwt.decode(context.token, app.get('JWT_SECRET'));
