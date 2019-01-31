@@ -94,20 +94,15 @@ class AccountForm extends Component {
               onClick={e => {
                 e.preventDefault();
                 const variables = {
-                  login: {
-                    email: 'a@b.c',
-                    password: 'password'
-                  },
-                  signup: {
-                    fullname: 'ttt',
-                    email: 'a@b.c',
+                  user: {
+                    email: 'test@test.test',
                     password: 'password'
                   }
                 }; // TODO get user from form inputs
                 console.log('SUBMITTING');
                 this.state.formToggle
-                  ? loginMutation({ variables: variables.login })
-                  : signupMutation({ variables: variables.signup });
+                  ? loginMutation({ variables })
+                  : signupMutation({ variables });
               }}
               disabled={
                 false // @TODO: This prop should depend on pristine or valid state of form

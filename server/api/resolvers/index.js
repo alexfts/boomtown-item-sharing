@@ -10,7 +10,7 @@ module.exports = app => {
     Date: DateScalar,
 
     Query: {
-      viewer() {
+      viewer(root, args, { token }) {
         /**
          * @TODO: Authentication - Server
          *
@@ -25,6 +25,10 @@ module.exports = app => {
          *  the token's stored user here. If there is no token, the user has signed out,
          *  in which case you'll return null
          */
+        if (token) {
+          console.log('DECODED USER', jwt.decode(token, app.get('JWT_SECRET')));
+          return jwt.decode(token, app.get('JWT_SECRET'));
+        }
         return null;
       },
       async user(parent, { id }, { pgResource }, info) {
