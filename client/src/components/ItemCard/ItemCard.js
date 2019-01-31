@@ -124,7 +124,7 @@ ItemCard.propTypes = {
 
 ItemCard.defaultProps = {
   item: {
-    imageurl: 'http://via.placeholder.com/500x250?text=Please select an image',
+    imageurl: 'http://via.placeholder.com/500x250?text=No image provided',
     itemowner: {
       fullname: 'Example',
       email: 'example@example.com'

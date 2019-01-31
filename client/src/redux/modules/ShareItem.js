@@ -33,8 +33,10 @@ export default (state = initialState, action) => {
   switch (action.type) {
   case UPDATE_ITEM:
     return { ...state, ...action.payload };
-  case RESET_ITEM:
+  case RESET_ITEM: {
+    console.log('resetting in reducer', { ...initialState });
     return { ...initialState };
+  }
   case RESET_IMAGE:
     return { ...state, imageurl: initialState.imageurl };
   default:

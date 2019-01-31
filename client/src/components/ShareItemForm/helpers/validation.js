@@ -12,6 +12,5 @@ export default function validate(values, checked, fileSelected) {
   if (!fileSelected) {
     errors.imageurl = 'Required';
   }
-
   return errors;
 }

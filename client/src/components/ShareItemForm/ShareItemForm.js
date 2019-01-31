@@ -81,7 +81,7 @@ class ShareItemForm extends Component {
     });
   };
 
-  onSubmit = (values, addItem) => {
+  onSubmit = async (values, addItem) => {
     this.setState({ submitted: true });
     const item = {
       title: values.title,
@@ -344,6 +344,7 @@ class ShareItemForm extends Component {
                           to="/"
                           color="secondary"
                           autoFocus
+                          onClick={() => this.closeModal(form)}
                         >
                           Back to items page
                         </Button>
@@ -362,7 +363,10 @@ class ShareItemForm extends Component {
 
 const mapDispatchToProps = dispatch => ({
   updateItem: item => dispatch(updateItem(item)),
-  resetItem: () => dispatch(resetItem()),
+  resetItem: () => {
+    console.log('dispatching reset item...');
+    return dispatch(resetItem());
+  },
   resetImage: () => dispatch(resetImage())
 });
 
