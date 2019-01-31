@@ -78,6 +78,7 @@ module.exports = app => {
 
     async login(parent, args, context) {
       try {
+        console.log(args.user);
         const user = await context.pgResource.getUserAndPasswordForVerification(
           args.user.email
         );
@@ -89,7 +90,8 @@ module.exports = app => {
          *  they submitted from the login form to decrypt the 'hashed' version stored in out database.
          */
         // Use bcrypt to compare the provided password to 'hashed' password stored in your database.
-        const valid = false;
+        const valid = await bcrypt.compare(args.user.password, user.password);
+        console.log(valid);
         // -------------------------------
         if (!valid || !user) throw 'User was not found.';
 
@@ -98,8 +100,7 @@ module.exports = app => {
           token: generateToken(user, app.get('JWT_SECRET')),
           res: context.req.res
         });
-
-        return user;
+        return user.id;
       } catch (e) {
         throw new AuthenticationError(e);
       }
