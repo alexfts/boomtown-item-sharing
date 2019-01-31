@@ -17,6 +17,7 @@ import PowerSettingsNew from '@material-ui/icons/PowerSettingsNew';
 import { Link } from 'react-router-dom';
 import logo from '../../images/boomtown.svg';
 import { withStyles } from '@material-ui/core/styles';
+import { withRouter } from 'react-router';
 import styles from './styles';
 
 class ControlBar extends React.Component {
@@ -33,69 +34,73 @@ class ControlBar extends React.Component {
   };
 
   render() {
-    const { classes, items } = this.props;
+    const { classes, items, location } = this.props;
     const { anchorEl } = this.state;
     return (
-      <AppBar>
-        <Toolbar position="static">
-          <IconButton component={Link} to="/" className={classes.logoButton}>
-            <img src={logo} alt="Boomtown" width="40px" height="48px" />
-          </IconButton>
-          <Button
-            aria-label="Add"
-            component={Link}
-            to="/share"
-            className={classes.shareButton}
-          >
-            <AddCircle color="secondary" className={classes.icon} />
-            <Typography
-              color="secondary"
-              variant="button"
-              style={{ fontSize: '13px' }}
-            >
-              Share something
-            </Typography>
-          </Button>
-          <div className={classes.menu}>
-            <IconButton
-              aria-owns={anchorEl ? 'simple-menu' : undefined}
-              aria-haspopup="true"
-              onClick={this.handleClick}
-            >
-              <MoreVert />
+      location.pathname !== '/welcome' && (
+        <AppBar>
+          <Toolbar position="static">
+            <IconButton component={Link} to="/" className={classes.logoButton}>
+              <img src={logo} alt="Boomtown" width="40px" height="48px" />
             </IconButton>
-            <Menu
-              id="simple-menu"
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={this.handleClose}
-            >
-              <MenuItem
+            {location.pathname !== '/share' && (
+              <Button
+                aria-label="Add"
                 component={Link}
-                to="/profile"
-                onClick={this.handleClose}
+                to="/share"
+                className={classes.shareButton}
               >
-                <ListItemIcon>
-                  <Fingerprint />
-                </ListItemIcon>
-                <ListItemText inset primary="Your Profile" />
-              </MenuItem>
-              <MenuItem
-                component={Link}
-                to="/welcome"
-                onClick={this.handleClose}
+                <AddCircle color="secondary" className={classes.icon} />
+                <Typography
+                  color="secondary"
+                  variant="button"
+                  style={{ fontSize: '13px' }}
+                >
+                  Share something
+                </Typography>
+              </Button>
+            )}
+            <div className={classes.menu}>
+              <IconButton
+                aria-owns={anchorEl ? 'simple-menu' : undefined}
+                aria-haspopup="true"
+                onClick={this.handleClick}
               >
-                <ListItemIcon>
-                  <PowerSettingsNew />
-                </ListItemIcon>
-                <ListItemText inset primary="Sign Out" />
-              </MenuItem>
-            </Menu>
-          </div>
-        </Toolbar>
-      </AppBar>
+                <MoreVert />
+              </IconButton>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={this.handleClose}
+              >
+                <MenuItem
+                  component={Link}
+                  to="/profile"
+                  onClick={this.handleClose}
+                >
+                  <ListItemIcon>
+                    <Fingerprint />
+                  </ListItemIcon>
+                  <ListItemText inset primary="Your Profile" />
+                </MenuItem>
+                <MenuItem
+                  component={Link}
+                  to="/welcome"
+                  onClick={this.handleClose}
+                >
+                  <ListItemIcon>
+                    <PowerSettingsNew />
+                  </ListItemIcon>
+                  <ListItemText inset primary="Sign Out" />
+                </MenuItem>
+              </Menu>
+            </div>
+          </Toolbar>
+        </AppBar>
+      )
     );
   }
 }
 
-export default withStyles(styles)(ControlBar);
+export default withRouter(withStyles(styles)(ControlBar));

@@ -6,19 +6,15 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
-/**
- * @TODO: Uncomment the following lines when authentication is added to the form
- *
- * import { Form, Field } from 'react-final-form'
- *
- * import {
- *    LOGIN_MUTATION,
- *    SIGNUP_MUTATION,
- *    VIEWER_QUERY
- * } from '../../apollo/queries';
- * import { graphql, compose } from 'react-apollo';
- * import validate from './helpers/validation'
- */
+import { Form, Field } from 'react-final-form';
+
+import {
+  LOGIN_MUTATION,
+  SIGNUP_MUTATION,
+  VIEWER_QUERY
+} from '../../apollo/queries';
+import { graphql, compose } from 'react-apollo';
+import validate from './helpers/validation';
 
 import styles from './styles';
 
@@ -31,7 +27,7 @@ class AccountForm extends Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, loginMutation, signupMutation } = this.props;
 
     return (
       // @TODO: Wrap in Final Form <Form />
@@ -95,6 +91,24 @@ class AccountForm extends Component {
               variant="contained"
               size="large"
               color="secondary"
+              onClick={e => {
+                e.preventDefault();
+                const variables = {
+                  login: {
+                    email: 'a@b.c',
+                    password: 'password'
+                  },
+                  signup: {
+                    fullname: 'ttt',
+                    email: 'a@b.c',
+                    password: 'password'
+                  }
+                }; // TODO get user from form inputs
+                console.log('SUBMITTING');
+                this.state.formToggle
+                  ? loginMutation({ variables: variables.login })
+                  : signupMutation({ variables: variables.signup });
+              }}
               disabled={
                 false // @TODO: This prop should depend on pristine or valid state of form
               }
@@ -130,4 +144,13 @@ class AccountForm extends Component {
 
 // @TODO: Use compose to add the login and signup mutations to this components props.
 // @TODO: Refetch the VIEWER_QUERY to reload the app and access authenticated routes.
-export default withStyles(styles)(AccountForm);
+//export default withStyles(styles)(AccountForm);
+export default compose(
+  graphql(SIGNUP_MUTATION, {
+    name: 'signupMutation'
+  }),
+  graphql(LOGIN_MUTATION, {
+    name: 'loginMutation'
+  }),
+  withStyles(styles)
+)(AccountForm);

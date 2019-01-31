@@ -168,7 +168,7 @@ class ShareItemForm extends Component {
                       justify="space-between"
                       spacing={24}
                     >
-                      <Grid item>
+                      <Grid item className={classes.titleContainer}>
                         <Typography
                           variant="display1"
                           color="secondary"
@@ -177,7 +177,7 @@ class ShareItemForm extends Component {
                           Share. Borrow. Prosper.
                         </Typography>
                       </Grid>
-                      <Grid item>
+                      <Grid item className={classes.imageButton}>
                         <Field
                           name="imageurl"
                           render={({ input, meta }) => (
@@ -280,7 +280,7 @@ class ShareItemForm extends Component {
                       <Grid item>
                         <FormControl fullWidth>
                           <InputLabel htmlFor="select-multiple-checkbox">
-                            Tags
+                            Add some tags
                           </InputLabel>
                           <Select
                             multiple

@@ -5,6 +5,12 @@ const styles = theme => ({
   title: {
     fontWeight: 600,
     fontSize: '44px'
+  },
+  titleContainer: {
+    padding: '8px'
+  },
+  imageButton: {
+    marginTop: '44px'
   }
 });
 

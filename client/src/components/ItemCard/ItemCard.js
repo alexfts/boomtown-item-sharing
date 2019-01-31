@@ -129,8 +129,8 @@ ItemCard.defaultProps = {
       fullname: 'Example',
       email: 'example@example.com'
     },
-    title: 'Name your item',
-    description: 'Describe your item',
+    title: 'No title provided',
+    description: 'No description provided',
     tags: []
   }
 };

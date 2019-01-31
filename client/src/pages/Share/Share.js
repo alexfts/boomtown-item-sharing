@@ -18,7 +18,7 @@ import ShareItemPreview from '../../components/ShareItemPreview';
 const Share = ({ classes, tags }) => {
   return (
     <div className={classes.sharePage}>
-      <Grid container spacing={8} justify="center">
+      <Grid container spacing={48} justify="center">
         <Grid item sm={4} className={classes.shareComponent}>
           <ShareItemPreview />
         </Grid>
