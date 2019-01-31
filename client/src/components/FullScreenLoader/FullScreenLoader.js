@@ -1,10 +1,12 @@
 import React from 'react';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress, Typography } from '@material-ui/core';
 
 const FullScreenLoader = ({ classes }) => (
   <div>
-    <div color="secondary">"For it is in giving that we receive."</div>
-    <CircularProgress color="secondary" />
+    <Typography color="yellow">
+      "For it is in giving that we receive."
+    </Typography>
+    <CircularProgress color="yellow" />
   </div>
 );
 
