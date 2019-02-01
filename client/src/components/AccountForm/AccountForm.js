@@ -6,7 +6,9 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import React, { Component } from 'react';
 import Typography from '@material-ui/core/Typography';
+import TextField from '@material-ui/core/TextField';
 import { Form, Field } from 'react-final-form';
+import { FORM_ERROR } from 'final-form';
 
 import {
   LOGIN_MUTATION,
@@ -14,7 +16,7 @@ import {
   VIEWER_QUERY
 } from '../../apollo/queries';
 import { graphql, compose } from 'react-apollo';
-import validate from './helpers/validation';
+import validate from './helpers/validation'; // @TODO put in email regex
 
 import styles from './styles';
 
@@ -30,9 +32,14 @@ class AccountForm extends Component {
     const variables = {
       user: values
     };
-    this.state.formToggle
-      ? this.props.loginMutation({ variables })
-      : this.props.signupMutation({ variables });
+    try {
+      this.state.formToggle
+        ? this.props.loginMutation({ variables })
+        : this.props.signupMutation({ variables });
+    } catch (e) {
+      console.log('oopsie whoopsie');
+      return { [FORM_ERROR]: e };
+    }
   };
 
   render() {
@@ -53,53 +60,43 @@ class AccountForm extends Component {
           <form onSubmit={handleSubmit} className={classes.accountForm}>
             {!this.state.formToggle && (
               <FormControl fullWidth className={classes.formControl}>
-                <InputLabel htmlFor="fullname">Username</InputLabel>
                 <Field
                   name="fullname"
                   render={({ input, meta }) => (
-                    <Input
+                    <TextField
+                      {...input}
+                      label="Username"
                       id="fullname"
-                      type="text"
-                      inputProps={{
-                        autoComplete: 'off',
-                        ...input
-                      }}
-                      value={''}
+                      autoComplete="off"
                     />
                   )}
                 />
               </FormControl>
             )}
             <FormControl fullWidth className={classes.formControl}>
-              <InputLabel htmlFor="email">Email</InputLabel>
               <Field
                 name="email"
                 render={({ input, meta }) => (
-                  <Input
+                  <TextField
+                    {...input}
                     id="email"
+                    label="Email"
                     type="text"
-                    inputProps={{
-                      autoComplete: 'off',
-                      ...input
-                    }}
-                    value={''}
+                    autoComplete="off"
                   />
                 )}
               />
             </FormControl>
             <FormControl fullWidth className={classes.formControl}>
-              <InputLabel htmlFor="password">Password</InputLabel>
               <Field
                 name="password"
                 render={({ input, meta }) => (
-                  <Input
+                  <TextField
+                    {...input}
                     id="password"
+                    label="Password"
                     type="password"
-                    inputProps={{
-                      autoComplete: 'off',
-                      ...input
-                    }}
-                    value={''}
+                    autoComplete="off"
                   />
                 )}
               />

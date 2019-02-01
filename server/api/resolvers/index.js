@@ -26,7 +26,6 @@ module.exports = app => {
          *  in which case you'll return null
          */
         if (token) {
-          console.log('DECODED USER', jwt.decode(token, app.get('JWT_SECRET')));
           return jwt.decode(token, app.get('JWT_SECRET'));
         }
         return null;
