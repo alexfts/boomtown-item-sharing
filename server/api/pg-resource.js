@@ -104,7 +104,7 @@ module.exports = postgres => {
         const items = await postgres.query({
           text: `SELECT * FROM items WHERE ownerid IS NOT NULL ${
             idToOmit ? ' AND ownerid <> $1' : ''
-          } `,
+          } ORDER BY created DESC`,
           values: idToOmit ? [idToOmit] : []
         });
         return items.rows;

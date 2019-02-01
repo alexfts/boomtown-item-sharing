@@ -101,7 +101,6 @@ class ShareItemForm extends Component {
 
   closeModal = form => {
     this.setState({ submitted: false, checked: [] });
-    console.log('RESET ITEM', this.props.resetItem);
     form.reset();
     this.clearSelectedFile();
     this.props.resetItem();
@@ -369,6 +368,28 @@ const mapDispatchToProps = dispatch => ({
   },
   resetImage: () => dispatch(resetImage())
 });
+
+// const refetchQueries = [
+//   {
+//     query: VIEWER_QUERY
+//   }
+// ];
+
+// export default compose(
+//   graphql(SIGNUP_MUTATION, {
+//     options: {
+//       refetchQueries
+//     },
+//     name: 'signupMutation'
+//   }),
+//   graphql(LOGIN_MUTATION, {
+//     options: {
+//       refetchQueries
+//     },
+//     name: 'loginMutation'
+//   }),
+//   withStyles(styles)
+// )(AccountForm);
 
 export default connect(
   null,

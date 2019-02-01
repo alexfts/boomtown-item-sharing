@@ -9,7 +9,7 @@ import { ALL_ITEMS_QUERY } from '../../apollo/queries';
 class ItemsContainer extends Component {
   render() {
     return (
-      <Query query={ALL_ITEMS_QUERY}>
+      <Query query={ALL_ITEMS_QUERY} fetchPolicy="network-only">
         {({ loading, error, data }) => {
           if (loading) return <FullScreenLoader inverted />;
           if (error) return <p>{`Error! ${error.message}`}</p>;

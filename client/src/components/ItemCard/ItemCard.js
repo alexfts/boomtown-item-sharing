@@ -66,7 +66,13 @@ const ItemCard = ({ classes, item }) => (
     <ButtonBase component={Link} to={`/profile/${item.itemowner.id}`}>
       <div>
         <div className={classes.media}>
-          <img className={classes.cardImg} src={item.imageurl} />
+          <img
+            className={classes.cardImg}
+            src={
+              item.imageurl ||
+              'http://via.placeholder.com/500x300?text=No image provided'
+            }
+          />
         </div>
         <Grid container className={classes.userInfo} alignItems="center">
           <Grid item className={classes.avatarContainer}>
