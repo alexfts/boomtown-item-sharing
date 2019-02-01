@@ -41,7 +41,7 @@ function generateToken(user, secret) {
 
 module.exports = app => {
   return {
-    async signup(parent, args, context) {
+    async signup(parent, args, { pgResource, req, token }) {
       try {
         /**
          * @TODO: Authentication - Server
@@ -54,10 +54,15 @@ module.exports = app => {
          * and store that instead. The password can be decoded using the original password.
          */
 
-        // TODO prevent signup from an already authenticated user
+        const viewer = await jwt.decode(token, app.get('JWT_SECRET'));
+        if (viewer) throw 'No signup allowed for an authenticated user';
+        if (!/.*@.*\..*/.test(args.user.email)) throw 'Invalid email';
+        if (args.user.password === '') throw 'Invalid password';
+        if (args.user.fullname === '') throw 'Invalid username';
+
         const hashedPassword = await bcrypt.hash(args.user.password, 10);
 
-        const user = await context.pgResource.createUser({
+        const user = await pgResource.createUser({
           fullname: args.user.fullname,
           email: args.user.email,
           password: hashedPassword
@@ -66,7 +71,7 @@ module.exports = app => {
         setCookie({
           tokenName: app.get('JWT_COOKIE_NAME'),
           token: generateToken(user, app.get('JWT_SECRET')),
-          res: context.req.res
+          res: req.res
         });
 
         return user;
@@ -75,10 +80,15 @@ module.exports = app => {
       }
     },
 
-    async login(parent, args, context) {
-      // TODO prevent signup from an already authenticated user
+    async login(parent, args, { pgResource, req, token }) {
       try {
-        const user = await context.pgResource.getUserAndPasswordForVerification(
+        const viewer = await jwt.decode(token, app.get('JWT_SECRET'));
+        if (viewer) throw 'No login allowed for an authenticated user';
+
+        if (!/.*@.*\..*/.test(args.user.email)) throw 'Invalid email';
+        if (args.user.password === '') throw 'Invalid password';
+
+        const user = await pgResource.getUserAndPasswordForVerification(
           args.user.email
         );
         if (!user) throw 'User was not found';
@@ -88,7 +98,7 @@ module.exports = app => {
         setCookie({
           tokenName: app.get('JWT_COOKIE_NAME'),
           token: generateToken(user, app.get('JWT_SECRET')),
-          res: context.req.res
+          res: req.res
         });
         return user;
       } catch (e) {
@@ -96,8 +106,8 @@ module.exports = app => {
       }
     },
 
-    logout(parent, args, context) {
-      context.req.res.clearCookie(app.get('JWT_COOKIE_NAME'));
+    logout(parent, args, { req }) {
+      req.res.clearCookie(app.get('JWT_COOKIE_NAME'));
       return true;
     }
   };

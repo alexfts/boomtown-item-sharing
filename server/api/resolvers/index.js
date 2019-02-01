@@ -115,6 +115,13 @@ module.exports = app => {
         const user = await jwt.decode(token, app.get('JWT_SECRET'));
         try {
           if (!user) throw 'Unauthorized';
+          if (
+            item.title === '' ||
+            item.description === '' ||
+            item.tags.length === 0
+          ) {
+            throw 'Invalid item input';
+          }
           const newItem = await pgResource.saveNewItem({
             item,
             //image: args.image,
