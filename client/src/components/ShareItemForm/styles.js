@@ -11,6 +11,9 @@ const styles = theme => ({
   },
   imageButton: {
     marginTop: '44px'
+  },
+  error: {
+    color: 'firebrick'
   }
 });
 

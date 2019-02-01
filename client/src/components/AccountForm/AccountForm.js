@@ -4,7 +4,7 @@ import FormControl from '@material-ui/core/FormControl';
 import Grid from '@material-ui/core/Grid';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import { Form, Field } from 'react-final-form';
@@ -16,7 +16,7 @@ import {
   VIEWER_QUERY
 } from '../../apollo/queries';
 import { graphql, compose } from 'react-apollo';
-import validate from './helpers/validation'; // @TODO put in email regex
+import validate from './helpers/validation';
 
 import styles from './styles';
 
@@ -50,7 +50,7 @@ class AccountForm extends Component {
     return (
       <Form
         onSubmit={this.onSubmit}
-        validate={validate}
+        validate={values => validate(values, this.state.formToggle)}
         render={({
           handleSubmit,
           form,
@@ -66,12 +66,20 @@ class AccountForm extends Component {
                 <Field
                   name="fullname"
                   render={({ input, meta }) => (
-                    <TextField
-                      {...input}
-                      label="Username"
-                      id="fullname"
-                      autoComplete="off"
-                    />
+                    <Fragment>
+                      <TextField
+                        {...input}
+                        label="Username"
+                        id="fullname"
+                        autoComplete="off"
+                      />
+                      {meta.touched &&
+                        meta.invalid && (
+                          <Typography className={classes.errorMessage}>
+                            {meta.error}
+                          </Typography>
+                        )}
+                    </Fragment>
                   )}
                 />
               </FormControl>
@@ -80,13 +88,21 @@ class AccountForm extends Component {
               <Field
                 name="email"
                 render={({ input, meta }) => (
-                  <TextField
-                    {...input}
-                    id="email"
-                    label="Email"
-                    type="text"
-                    autoComplete="off"
-                  />
+                  <Fragment>
+                    <TextField
+                      {...input}
+                      id="email"
+                      label="Email"
+                      type="text"
+                      autoComplete="off"
+                    />
+                    {meta.touched &&
+                      meta.invalid && (
+                        <Typography className={classes.errorMessage}>
+                          {meta.error}
+                        </Typography>
+                      )}
+                  </Fragment>
                 )}
               />
             </FormControl>
@@ -94,13 +110,21 @@ class AccountForm extends Component {
               <Field
                 name="password"
                 render={({ input, meta }) => (
-                  <TextField
-                    {...input}
-                    id="password"
-                    label="Password"
-                    type="password"
-                    autoComplete="off"
-                  />
+                  <Fragment>
+                    <TextField
+                      {...input}
+                      id="password"
+                      label="Password"
+                      type="password"
+                      autoComplete="off"
+                    />
+                    {meta.touched &&
+                      meta.invalid && (
+                        <Typography className={classes.errorMessage}>
+                          {meta.error}
+                        </Typography>
+                      )}
+                  </Fragment>
                 )}
               />
             </FormControl>

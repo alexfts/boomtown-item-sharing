@@ -111,6 +111,7 @@ class ShareItemForm extends Component {
     this.setState({ fileSelected: null });
     this.props.resetImage();
   };
+
   generateTagsText = (tags, selected) => {
     return tags
       .map(t => (selected.indexOf(t.id) > -1 ? t.title : false))
@@ -190,16 +191,6 @@ class ShareItemForm extends Component {
                                 onChange={this.handleSelectFile}
                                 hidden
                               />
-
-                              {meta.touched &&
-                                meta.invalid && (
-                                  <div
-                                    className="error"
-                                    style={{ color: 'red' }}
-                                  >
-                                    {meta.error}
-                                  </div>
-                                )}
                               {!this.state.fileSelected ? (
                                 <label
                                   htmlFor="file-upload-input"
@@ -240,12 +231,9 @@ class ShareItemForm extends Component {
                               />
                               {meta.touched &&
                                 meta.invalid && (
-                                  <div
-                                    className="error"
-                                    style={{ color: 'red' }}
-                                  >
+                                  <Typography className={classes.error}>
                                     {meta.error}
-                                  </div>
+                                  </Typography>
                                 )}
                             </Fragment>
                           )}
@@ -265,12 +253,9 @@ class ShareItemForm extends Component {
                               />
                               {meta.touched &&
                                 meta.invalid && (
-                                  <div
-                                    className="error"
-                                    style={{ color: 'red' }}
-                                  >
+                                  <Typography className={classes.error}>
                                     {meta.error}
-                                  </div>
+                                  </Typography>
                                 )}
                             </Fragment>
                           )}
@@ -368,28 +353,6 @@ const mapDispatchToProps = dispatch => ({
   },
   resetImage: () => dispatch(resetImage())
 });
-
-// const refetchQueries = [
-//   {
-//     query: VIEWER_QUERY
-//   }
-// ];
-
-// export default compose(
-//   graphql(SIGNUP_MUTATION, {
-//     options: {
-//       refetchQueries
-//     },
-//     name: 'signupMutation'
-//   }),
-//   graphql(LOGIN_MUTATION, {
-//     options: {
-//       refetchQueries
-//     },
-//     name: 'loginMutation'
-//   }),
-//   withStyles(styles)
-// )(AccountForm);
 
 export default connect(
   null,

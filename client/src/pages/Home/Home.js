@@ -2,7 +2,6 @@ import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import AccountForm from '../../components/AccountForm';
-import FullScreenLoader from '../../components/FullScreenLoader';
 
 const Home = ({ classes }) => {
   return (
