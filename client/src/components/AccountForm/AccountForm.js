@@ -28,33 +28,36 @@ class AccountForm extends Component {
     };
   }
 
-  onSubmit = values => {
+  onSubmit = async values => {
     const variables = {
       user: values
     };
     try {
       this.state.formToggle
-        ? this.props.loginMutation({ variables })
-        : this.props.signupMutation({ variables });
+        ? await this.props.loginMutation({ variables })
+        : await this.props.signupMutation({ variables });
     } catch (e) {
-      console.log('oopsie whoopsie');
-      return { [FORM_ERROR]: e };
+      return {
+        [FORM_ERROR]: this.state.formToggle
+          ? 'Incorrect email and/or password'
+          : 'An account with this email already exists.'
+      };
     }
   };
 
   render() {
     const { classes } = this.props;
-
     return (
       <Form
         onSubmit={this.onSubmit}
         validate={validate}
         render={({
           handleSubmit,
-          reset,
+          form,
           submitting,
           pristine,
-          invalid,
+          hasValidationErrors,
+          hasSubmitErrors,
           submitError
         }) => (
           <form onSubmit={handleSubmit} className={classes.accountForm}>
@@ -114,7 +117,7 @@ class AccountForm extends Component {
                   variant="contained"
                   size="large"
                   color="secondary"
-                  disabled={submitting || pristine || invalid}
+                  disabled={submitting || pristine || hasValidationErrors}
                 >
                   {this.state.formToggle ? 'Enter' : 'Create Account'}
                 </Button>
@@ -123,7 +126,7 @@ class AccountForm extends Component {
                     className={classes.formToggle}
                     type="button"
                     onClick={() => {
-                      // @TODO: Reset the form on submit
+                      form.reset();
                       this.setState({
                         formToggle: !this.state.formToggle
                       });
@@ -136,9 +139,11 @@ class AccountForm extends Component {
                 </Typography>
               </Grid>
             </FormControl>
-            <Typography className={classes.errorMessage}>
-              {submitError && <span>{submitError}</span>}
-            </Typography>
+            {hasSubmitErrors && (
+              <Typography className={classes.errorMessage}>
+                {submitError}
+              </Typography>
+            )}
           </form>
         )}
       />

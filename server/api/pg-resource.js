@@ -20,10 +20,11 @@ const tagsQueryString = (tags, itemid) => {
 /**
  * Helper function to insert item into postgres as part of a transaction
  */
-const insertItem = async (client, title, description) => {
+const insertItem = async (client, title, description, user) => {
   const insertItemQuery = {
-    text: 'INSERT INTO items (title, description) VALUES ($1, $2) RETURNING *',
-    values: [title, description]
+    text:
+      'INSERT INTO items (title, description, ownerid) VALUES ($1, $2, $3) RETURNING *',
+    values: [title, description, user.id]
   };
 
   const insertItemResult = await client.query(insertItemQuery);
@@ -55,7 +56,6 @@ module.exports = postgres => {
         const user = await postgres.query(newUserInsert);
         return user.rows[0];
       } catch (e) {
-        console.log(e);
         switch (true) {
         case /users_fullname_key/.test(e.message):
           throw 'An account with this username already exists.';
@@ -165,7 +165,7 @@ module.exports = postgres => {
       }
     },
 
-    async saveNewItem({ item, image, user }) {
+    async saveNewItem({ item, user }) {
       return new Promise((resolve, reject) => {
         postgres.connect((err, client, done) => {
           try {
@@ -183,7 +183,12 @@ module.exports = postgres => {
               //   // Image has been converted, begin saving things
 
               const { title, description, tags } = item;
-              const newItem = await insertItem(client, title, description);
+              const newItem = await insertItem(
+                client,
+                title,
+                description,
+                user
+              );
 
               /* @TODO: Upload image */
               // const imageUploadQuery = {

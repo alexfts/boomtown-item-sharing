@@ -42,7 +42,6 @@ function generateToken(user, secret) {
 module.exports = app => {
   return {
     async signup(parent, args, context) {
-      console.log(args.user);
       try {
         /**
          * @TODO: Authentication - Server
@@ -55,6 +54,7 @@ module.exports = app => {
          * and store that instead. The password can be decoded using the original password.
          */
 
+        // TODO prevent signup from an already authenticated user
         const hashedPassword = await bcrypt.hash(args.user.password, 10);
 
         const user = await context.pgResource.createUser({
@@ -76,13 +76,14 @@ module.exports = app => {
     },
 
     async login(parent, args, context) {
+      // TODO prevent signup from an already authenticated user
       try {
-        console.log(args.user);
         const user = await context.pgResource.getUserAndPasswordForVerification(
           args.user.email
         );
+        if (!user) throw 'User was not found';
         const valid = await bcrypt.compare(args.user.password, user.password);
-        if (!valid || !user) throw 'User was not found.';
+        if (!valid) throw 'User was not found.';
 
         setCookie({
           tokenName: app.get('JWT_COOKIE_NAME'),

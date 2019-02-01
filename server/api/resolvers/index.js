@@ -1,4 +1,4 @@
-const { ApolloError } = require('apollo-server-express');
+const { ApolloError, AuthenticationError } = require('apollo-server-express');
 const jwt = require('jsonwebtoken');
 const authMutations = require('./auth');
 
@@ -11,39 +11,37 @@ module.exports = app => {
 
     Query: {
       viewer(root, args, { token }) {
-        /**
-         * @TODO: Authentication - Server
-         *
-         *  If you're here, you have successfully completed the sign-up and login resolvers
-         *  and have added the JWT from the HTTP cookie to your resolver's context.
-         *
-         *  The viewer is what we're calling the current user signed into your application.
-         *  When the user signed in with their username and password, an JWT was created with
-         *  the user's information cryptographically encoded inside.
-         *
-         *  To provide information about the user's session to the app, decode and return
-         *  the token's stored user here. If there is no token, the user has signed out,
-         *  in which case you'll return null
-         */
         if (token) {
           return jwt.decode(token, app.get('JWT_SECRET'));
         }
         return null;
       },
-      async user(parent, { id }, { pgResource }, info) {
+      async user(parent, { id }, { pgResource, token }, info) {
         try {
+          const viewer = await jwt.decode(token, app.get('JWT_SECRET'));
+          if (!viewer) throw 'Unauthorized';
           const user = await pgResource.getUserById(id);
           return user;
         } catch (e) {
-          throw new ApolloError(e);
+          if (e === 'Unauthorized') {
+            throw new AuthenticationError(e);
+          } else {
+            throw new ApolloError(e);
+          }
         }
       },
-      async items(parent, { filter }, { pgResource }) {
+      async items(parent, { filter }, { pgResource, token }) {
         try {
+          const viewer = await jwt.decode(token, app.get('JWT_SECRET'));
+          if (!viewer) throw 'Unauthorized';
           const items = await pgResource.getItems(filter);
           return items;
         } catch (e) {
-          throw new ApolloError(e);
+          if (e === 'Unauthorized') {
+            throw new AuthenticationError(e);
+          } else {
+            throw new ApolloError(e);
+          }
         }
       },
       async tags(parent, _, { pgResource }) {
@@ -111,19 +109,24 @@ module.exports = app => {
 
     Mutation: {
       ...authMutations(app),
-      async addItem(parent, { item }, { pgResource, req }, info) {
-        // @TODO add image and user
+      async addItem(parent, { item }, { pgResource, req, token }, info) {
+        // @TODO add image
         // image = await image;
-        // const user = await jwt.decode(context.token, app.get('JWT_SECRET'));
+        const user = await jwt.decode(token, app.get('JWT_SECRET'));
         try {
+          if (!user) throw 'Unauthorized';
           const newItem = await pgResource.saveNewItem({
-            item
+            item,
             //image: args.image,
-            //user
+            user
           });
           return newItem;
         } catch (e) {
-          throw new ApolloError(e);
+          if (e === 'Unauthorized') {
+            throw new AuthenticationError(e);
+          } else {
+            throw new ApolloError(e);
+          }
         }
       }
     }
