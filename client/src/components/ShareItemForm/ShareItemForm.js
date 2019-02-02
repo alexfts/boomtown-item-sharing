@@ -58,6 +58,10 @@ class ShareItemForm extends Component {
     });
   };
 
+  componentWillUnmount = () => {
+    this.resetForm();
+  };
+
   applyTags = tags => {
     return (
       tags &&
@@ -99,9 +103,9 @@ class ShareItemForm extends Component {
     this.setState({ fileSelected: this.fileInput.current.files[0] });
   };
 
-  closeModal = form => {
+  resetForm = form => {
     this.setState({ submitted: false, selectedTags: [] });
-    form.reset();
+    form && form.reset();
     this.clearSelectedFile();
     this.props.resetItem();
   };
@@ -293,7 +297,7 @@ class ShareItemForm extends Component {
                     <Dialog
                       fullScreen={fullScreen}
                       open={this.state.submitted}
-                      onClose={() => this.closeModal(form)}
+                      onClose={() => this.resetForm(form)}
                       aria-labelledby="responsive-dialog-title"
                     >
                       <DialogTitle id="responsive-dialog-title">
@@ -311,7 +315,7 @@ class ShareItemForm extends Component {
                       </DialogContent>
                       <DialogActions>
                         <Button
-                          onClick={() => this.closeModal(form)}
+                          onClick={() => this.resetForm(form)}
                           color="primary"
                         >
                           Add another item
@@ -321,7 +325,7 @@ class ShareItemForm extends Component {
                           to="/"
                           color="secondary"
                           autoFocus
-                          onClick={() => this.closeModal(form)}
+                          onClick={() => this.resetForm(form)}
                         >
                           Back to items page
                         </Button>

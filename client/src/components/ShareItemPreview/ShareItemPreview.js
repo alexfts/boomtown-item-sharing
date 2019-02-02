@@ -7,14 +7,12 @@ const mapStateToProps = ({ shareItemPreview }) => ({
   shareItemPreview
 });
 
-const ShareItemPreview = ({ shareItemPreview }) => {
-  return (
-    <ViewerContext.Consumer>
-      {({ viewer, loading }) => (
-        <ItemCard item={{ ...shareItemPreview, itemowner: viewer }} />
-      )}
-    </ViewerContext.Consumer>
-  );
-};
+const ShareItemPreview = ({ shareItemPreview }) => (
+  <ViewerContext.Consumer>
+    {({ viewer }) => (
+      <ItemCard item={{ ...shareItemPreview, itemowner: viewer }} />
+    )}
+  </ViewerContext.Consumer>
+);
 
 export default connect(mapStateToProps)(ShareItemPreview);

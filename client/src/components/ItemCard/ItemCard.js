@@ -16,7 +16,7 @@ import countTimeAgo from './helpers/countTimeAgo';
 
 const ItemCard = ({ classes, item }) => (
   <ViewerContext.Consumer>
-    {({ viewer, loading }) => (
+    {({ viewer }) => (
       <Card className={classes.card}>
         <ButtonBase
           component={Link}
