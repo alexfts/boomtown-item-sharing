@@ -17,8 +17,10 @@ import countDaysAgo from './helpers/countDaysAgo';
 const styles = {
   card: {},
   media: {
-    overflow: 'hidden',
-    height: '205px'
+    // overflow: 'hidden',
+    // height: '205px'
+    paddingTop: '56.25%',
+    width: '100%'
   },
   cardImg: {
     width: '100%'
@@ -30,6 +32,10 @@ const styles = {
   userInfo: {
     marginTop: 15,
     marginBottom: 20
+  },
+  buttonToProfile: {
+    height: '56.25%',
+    width: '100%'
   },
   avatar: {
     height: '50px',
@@ -58,14 +64,29 @@ const styles = {
   },
   description: {
     fontSize: '20px'
+  },
+  buttonImage: {
+    width: '100%',
+    height: '100%'
+  },
+  cardContent: {
+    height: '130px'
+  },
+  itemInfo: {
+    height: '100%',
+    overflow: 'auto'
   }
 };
 
 const ItemCard = ({ classes, item }) => (
   <Card className={classes.card}>
-    <ButtonBase component={Link} to={`/profile/${item.itemowner.id}`}>
-      <div>
-        <div className={classes.media}>
+    <ButtonBase
+      component={Link}
+      to={`/profile/${item.itemowner.id}`}
+      className={classes.buttonToProfile}
+    >
+      <div className={classes.buttonImage}>
+        {/* <div className={classes.media}>
           <img
             className={classes.cardImg}
             src={
@@ -73,7 +94,15 @@ const ItemCard = ({ classes, item }) => (
               'http://via.placeholder.com/500x300?text=No image provided'
             }
           />
-        </div>
+        </div> */}
+        <CardMedia
+          className={classes.media}
+          image={
+            item.imageurl ||
+            'http://via.placeholder.com/500x300?text=No image provided'
+          }
+          title="Image title"
+        />
         <Grid container className={classes.userInfo} alignItems="center">
           <Grid item className={classes.avatarContainer}>
             <Avatar className={classes.avatar}>
@@ -93,25 +122,30 @@ const ItemCard = ({ classes, item }) => (
       </div>
     </ButtonBase>
 
-    <CardContent>
-      <Typography variant="headline" className={classes.title}>
-        {item.title}
-      </Typography>
-      <Typography variant="caption" className={classes.tags}>
-        {item.tags.map(({ title }) => title).join(', ')}
-      </Typography>
-      <Typography variant="body1" style={{ fontSize: '16px' }}>
-        {item.description}
-      </Typography>
+    <CardContent className={classes.cardContent}>
+      <div className={classes.itemInfo}>
+        <Typography variant="headline" className={classes.title}>
+          {item.title}
+        </Typography>
+        <Typography variant="caption" className={classes.tags}>
+          {item.tags.map(({ title }) => title).join(', ')}
+        </Typography>
+        <Typography variant="body1" style={{ fontSize: '16px' }}>
+          {item.description}
+        </Typography>
+      </div>
     </CardContent>
-    {item.id &&
-      !item.borrower && (
-        <CardActions>
-          <Button variant="contained" className={classes.borrowButton}>
-            Borrow
-          </Button>
-        </CardActions>
-      )}
+    {item.id && ( // don't display the button on ShareItemPreview
+      <CardActions>
+        <Button
+          variant="contained"
+          className={classes.borrowButton}
+          disabled={item.borrower}
+        >
+          Borrow
+        </Button>
+      </CardActions>
+    )}
   </Card>
 );
 
