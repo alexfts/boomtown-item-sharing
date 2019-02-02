@@ -12,7 +12,8 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { Avatar, Grid, ButtonBase } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import countDaysAgo from './helpers/countDaysAgo';
+import countTimeAgo from './helpers/countTimeAgo';
+import { ViewerContext } from '../../context/ViewerProvider';
 
 const styles = {
   card: {},
@@ -79,14 +80,18 @@ const styles = {
 };
 
 const ItemCard = ({ classes, item }) => (
-  <Card className={classes.card}>
-    <ButtonBase
-      component={Link}
-      to={`/profile/${item.itemowner.id}`}
-      className={classes.buttonToProfile}
-    >
-      <div className={classes.buttonImage}>
-        {/* <div className={classes.media}>
+  <ViewerContext.Consumer>
+    {({ viewer, loading }) => {
+      const itemowner = item.itemowner || viewer;
+      return (
+        <Card className={classes.card}>
+          <ButtonBase
+            component={Link}
+            to={`/profile/${itemowner.id}`}
+            className={classes.buttonToProfile}
+          >
+            <div className={classes.buttonImage}>
+              {/* <div className={classes.media}>
           <img
             className={classes.cardImg}
             src={
@@ -95,58 +100,61 @@ const ItemCard = ({ classes, item }) => (
             }
           />
         </div> */}
-        <CardMedia
-          className={classes.media}
-          image={
-            item.imageurl ||
-            'http://via.placeholder.com/500x300?text=No image provided'
-          }
-          title="Image title"
-        />
-        <Grid container className={classes.userInfo} alignItems="center">
-          <Grid item className={classes.avatarContainer}>
-            <Avatar className={classes.avatar}>
-              <Gravatar email={item.itemowner.email} />
-            </Avatar>
-          </Grid>
-          <Grid item>
-            <Typography variant="subheading" className={classes.name}>
-              {item.itemowner.fullname}
-            </Typography>
-            <Typography variant="caption" style={{ fontSize: '14px' }}>
-              {' '}
-              {countDaysAgo(item.created)}{' '}
-            </Typography>
-          </Grid>
-        </Grid>
-      </div>
-    </ButtonBase>
+              <CardMedia
+                className={classes.media}
+                image={
+                  item.imageurl ||
+                  'http://via.placeholder.com/500x300?text=No image provided'
+                }
+                title="Image title"
+              />
+              <Grid container className={classes.userInfo} alignItems="center">
+                <Grid item className={classes.avatarContainer}>
+                  <Avatar className={classes.avatar}>
+                    <Gravatar email={itemowner.email} />
+                  </Avatar>
+                </Grid>
+                <Grid item>
+                  <Typography variant="subheading" className={classes.name}>
+                    {itemowner.fullname}
+                  </Typography>
+                  <Typography variant="caption" style={{ fontSize: '14px' }}>
+                    {' '}
+                    {countTimeAgo(item.created)}{' '}
+                  </Typography>
+                </Grid>
+              </Grid>
+            </div>
+          </ButtonBase>
 
-    <CardContent className={classes.cardContent}>
-      <div className={classes.itemInfo}>
-        <Typography variant="headline" className={classes.title}>
-          {item.title}
-        </Typography>
-        <Typography variant="caption" className={classes.tags}>
-          {item.tags.map(({ title }) => title).join(', ')}
-        </Typography>
-        <Typography variant="body1" style={{ fontSize: '16px' }}>
-          {item.description}
-        </Typography>
-      </div>
-    </CardContent>
-    {item.id && ( // don't display the button on ShareItemPreview
-      <CardActions>
-        <Button
-          variant="contained"
-          className={classes.borrowButton}
-          disabled={item.borrower}
-        >
-          Borrow
-        </Button>
-      </CardActions>
-    )}
-  </Card>
+          <CardContent className={classes.cardContent}>
+            <div className={classes.itemInfo}>
+              <Typography variant="headline" className={classes.title}>
+                {item.title}
+              </Typography>
+              <Typography variant="caption" className={classes.tags}>
+                {item.tags.map(({ title }) => title).join(', ')}
+              </Typography>
+              <Typography variant="body1" style={{ fontSize: '16px' }}>
+                {item.description}
+              </Typography>
+            </div>
+          </CardContent>
+          {item.id && ( // don't display the button on ShareItemPreview
+            <CardActions>
+              <Button
+                variant="contained"
+                className={classes.borrowButton}
+                disabled={item.borrower}
+              >
+                Borrow
+              </Button>
+            </CardActions>
+          )}
+        </Card>
+      );
+    }}
+  </ViewerContext.Consumer>
 );
 
 ItemCard.propTypes = {

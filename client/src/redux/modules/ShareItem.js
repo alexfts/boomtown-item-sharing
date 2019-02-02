@@ -19,11 +19,6 @@ export const resetImage = () => ({
 
 const initialState = {
   imageurl: 'http://via.placeholder.com/500x250?text=Please select an image',
-  itemowner: {
-    fullname: 'Example',
-    email: 'example@example.com',
-    id: '1'
-  },
   title: 'Name your item',
   description: 'Describe your item',
   tags: []
