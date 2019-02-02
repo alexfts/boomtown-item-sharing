@@ -110,10 +110,8 @@ module.exports = app => {
     Mutation: {
       ...authMutations(app),
       async addItem(parent, { item }, { pgResource, req, token }, info) {
-        // @TODO add image
-        // image = await image;
-        const user = await jwt.decode(token, app.get('JWT_SECRET'));
         try {
+          const user = await jwt.decode(token, app.get('JWT_SECRET'));
           if (!user) throw 'Unauthorized';
           if (
             item.title === '' ||
@@ -124,7 +122,6 @@ module.exports = app => {
           }
           const newItem = await pgResource.saveNewItem({
             item,
-            //image: args.image,
             user
           });
           return newItem;

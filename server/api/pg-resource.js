@@ -48,7 +48,6 @@ module.exports = postgres => {
     async createUser({ fullname, email, password }) {
       const newUserInsert = {
         text:
-          // @TODO: Authentication - Server
           'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, name AS fullname, email, bio',
         values: [fullname, email, password]
       };
@@ -69,7 +68,6 @@ module.exports = postgres => {
 
     async getUserAndPasswordForVerification(email) {
       const findUserQuery = {
-        // @TODO: Authentication - Server
         text:
           'SELECT id, name AS fullname, email, bio, password FROM users WHERE email = $1',
         values: [email]
@@ -170,18 +168,6 @@ module.exports = postgres => {
         postgres.connect((err, client, done) => {
           try {
             client.query('BEGIN', async err => {
-              // @TODO Convert image (file stream) to Base64
-
-              // const imageStream = image.stream.pipe(strs('base64'));
-
-              // let base64Str = '';
-              // imageStream.on('data', data => {
-              //   base64Str += data;
-              // });
-
-              // imageStream.on('end', async err => {
-              //   // Image has been converted, begin saving things
-
               const { title, description, tags } = item;
               const newItem = await insertItem(
                 client,
@@ -190,33 +176,7 @@ module.exports = postgres => {
                 user
               );
 
-              /* @TODO: Upload image */
-              // const imageUploadQuery = {
-              //   text:
-              //     'INSERT INTO uploads (itemid, filename, mimetype, encoding, data) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-              //   values: [
-              //     // itemid,
-              //     image.filename,
-              //     image.mimetype,
-              //     'base64',
-              //     base64Str
-              //   ]
-              // };
-
-              // // Upload image
-              // const uploadedImage = await client.query(imageUploadQuery);
-              // const imageid = uploadedImage.rows[0].id;
-
-              // Generate image relation query
-              // @TODO
-              // -------------------------------
-
-              // Insert image
-              // @TODO
-              // -------------------------------
-
               await insertItemTags(client, tags, newItem);
-
               client.query('COMMIT', err => {
                 if (err) {
                   throw err;
@@ -224,7 +184,6 @@ module.exports = postgres => {
                 done();
                 resolve(newItem);
               });
-              //}); // end of imageStream.on('end') handler
             });
           } catch (e) {
             client.query('ROLLBACK', err => {

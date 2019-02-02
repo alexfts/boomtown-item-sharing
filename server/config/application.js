@@ -6,15 +6,6 @@ const path = require('path');
 
 module.exports = app => {
   const PORT = process.env.PORT || 8080;
-  /**
-   *  @TODO: Configuration Variables
-   *  JWT_SECRET
-   *
-   *  The following non-security related information should also be set for use elsewhere:
-   *
-   *  JWT_COOKIE_NAME
-   *  CORS_CONFIG (already set for you below)
-   */
   app.set('PG_HOST', process.env.PG_HOST || 'localhost');
   app.set('PG_USER', process.env.PG_USER || 'boomtown');
   app.set('PG_PASSWORD', process.env.PG_USER || 'boomtown');
@@ -32,7 +23,6 @@ module.exports = app => {
   }
 
   if (process.env.NODE_ENV === 'development') {
-    // Allow requests from dev server address
     const corsConfig = {
       origin: 'http://localhost:3000',
       credentials: true
