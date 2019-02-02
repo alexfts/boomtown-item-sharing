@@ -29,7 +29,6 @@ export default (state = initialState, action) => {
   case UPDATE_ITEM:
     return { ...state, ...action.payload };
   case RESET_ITEM: {
-    console.log('resetting in reducer', { ...initialState });
     return { ...initialState };
   }
   case RESET_IMAGE:

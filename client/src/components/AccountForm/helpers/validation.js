@@ -8,7 +8,6 @@ export default function validate(values, isLogin) {
   if (!values.password) {
     errors.password = 'Password is required';
   }
-
   if (!isLogin && !values.fullname) {
     errors.fullname = 'Required';
   }

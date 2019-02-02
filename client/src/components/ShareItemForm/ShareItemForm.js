@@ -19,10 +19,10 @@ import {
 } from '@material-ui/core';
 import { Form, Field, FormSpy } from 'react-final-form';
 import { withStyles } from '@material-ui/core/styles';
+import styles from './styles';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 import CloudDone from '@material-ui/icons/CloudDone';
 import { Link } from 'react-router-dom';
-import styles from './styles';
 import {
   updateItem,
   resetItem,
@@ -38,7 +38,7 @@ class ShareItemForm extends Component {
     super(props);
     this.fileInput = React.createRef();
     this.state = {
-      checked: [],
+      selectedTags: [],
       submitted: false,
       fileSelected: null
     };
@@ -62,7 +62,7 @@ class ShareItemForm extends Component {
     return (
       tags &&
       tags
-        .filter(t => this.state.checked.indexOf(t.title) > -1)
+        .filter(t => this.state.selectedTags.indexOf(t.title) > -1)
         .map(t => ({ title: t.title, id: t.id }))
     );
   };
@@ -92,7 +92,7 @@ class ShareItemForm extends Component {
   };
 
   handleSelectTags = event => {
-    this.setState({ checked: event.target.value });
+    this.setState({ selectedTags: event.target.value });
   };
 
   handleSelectFile = event => {
@@ -100,7 +100,7 @@ class ShareItemForm extends Component {
   };
 
   closeModal = form => {
-    this.setState({ submitted: false, checked: [] });
+    this.setState({ submitted: false, selectedTags: [] });
     form.reset();
     this.clearSelectedFile();
     this.props.resetItem();
@@ -120,26 +120,18 @@ class ShareItemForm extends Component {
   };
 
   render() {
-    const {
-      classes,
-      tags,
-      fullScreen,
-      updateItem,
-      resetItem,
-      resetImage
-    } = this.props;
-    const tagNames = tags.map(({ title }) => title);
+    const { classes, tags, fullScreen, updateItem } = this.props;
 
     return (
       <Mutation mutation={ADD_ITEM_MUTATION}>
-        {(addItem, { data }) => (
+        {addItem => (
           <div>
             <Form
               onSubmit={values => this.onSubmit(values, addItem)}
               validate={values => {
                 return validate(
                   values,
-                  this.state.checked,
+                  this.state.selectedTags,
                   this.state.fileSelected
                 );
               }}
@@ -268,7 +260,7 @@ class ShareItemForm extends Component {
                           </InputLabel>
                           <Select
                             multiple
-                            value={this.state.checked}
+                            value={this.state.selectedTags}
                             onChange={this.handleSelectTags}
                             input={<Input id="select-multiple-checkbox" />}
                             renderValue={selected => selected.join(', ')}
@@ -277,7 +269,8 @@ class ShareItemForm extends Component {
                               <MenuItem key={tag.id} value={tag.title}>
                                 <Checkbox
                                   checked={
-                                    this.state.checked.indexOf(tag.title) > -1
+                                    this.state.selectedTags.indexOf(tag.title) >
+                                    -1
                                   }
                                 />
                                 <ListItemText primary={tag.title} />
@@ -348,7 +341,6 @@ class ShareItemForm extends Component {
 const mapDispatchToProps = dispatch => ({
   updateItem: item => dispatch(updateItem(item)),
   resetItem: () => {
-    console.log('dispatching reset item...');
     return dispatch(resetItem());
   },
   resetImage: () => dispatch(resetImage())

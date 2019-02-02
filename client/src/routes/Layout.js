@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Redirect, Route, Switch, Router } from 'react-router';
+import { Redirect, Route, Switch } from 'react-router';
 import Items from '../pages/Items';
 import Home from '../pages/Home';
 import Profile from '../pages/Profile';
@@ -17,7 +17,6 @@ export default () => (
           return (
             <Fragment>
               <ControlBar />
-
               <Switch>
                 <Route exact path="/items" component={Items} />
                 <Route exact path="/profile" component={Profile} />

@@ -24,9 +24,12 @@ import { LOGOUT_MUTATION, VIEWER_QUERY } from '../../apollo/queries';
 import { graphql, compose } from 'react-apollo';
 
 class ControlBar extends React.Component {
-  state = {
-    anchorEl: null
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      anchorEl: null
+    };
+  }
 
   handleClick = event => {
     this.setState({ anchorEl: event.currentTarget });
@@ -37,7 +40,7 @@ class ControlBar extends React.Component {
   };
 
   render() {
-    const { classes, items, location, logoutMutation } = this.props;
+    const { classes, location, logoutMutation } = this.props;
     const { anchorEl } = this.state;
     return (
       <AppBar>

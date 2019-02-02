@@ -1,15 +1,5 @@
 import React from 'react';
-import {
-  Grid,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Card,
-  CardMedia,
-  CardContent,
-  Paper,
-  Avatar
-} from '@material-ui/core';
+import { Grid, Paper, Avatar } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Gravatar from 'react-gravatar';
 import ItemGrid from '../../components/ItemGrid';
