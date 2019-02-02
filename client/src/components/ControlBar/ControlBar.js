@@ -8,7 +8,8 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-  Typography
+  Typography,
+  Slide
 } from '@material-ui/core';
 import AddCircle from '@material-ui/icons/AddCircle';
 import MoreVert from '@material-ui/icons/MoreVert';
@@ -44,7 +45,12 @@ class ControlBar extends React.Component {
           <IconButton component={Link} to="/" className={classes.logoButton}>
             <img src={logo} alt="Boomtown" width="40px" height="48px" />
           </IconButton>
-          {location.pathname !== '/share' && (
+          <Slide
+            direction="left"
+            in={location.pathname !== '/share'}
+            mountOnEnter
+            unmountOnExit
+          >
             <Button
               aria-label="Add"
               component={Link}
@@ -60,7 +66,7 @@ class ControlBar extends React.Component {
                 Share something
               </Typography>
             </Button>
-          )}
+          </Slide>
           <div className={classes.menu}>
             <IconButton
               aria-owns={anchorEl ? 'simple-menu' : undefined}

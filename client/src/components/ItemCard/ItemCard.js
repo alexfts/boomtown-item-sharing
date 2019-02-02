@@ -145,7 +145,7 @@ const ItemCard = ({ classes, item }) => (
               <Button
                 variant="contained"
                 className={classes.borrowButton}
-                disabled={item.borrower}
+                disabled={item.itemowner.id === viewer.id}
               >
                 Borrow
               </Button>

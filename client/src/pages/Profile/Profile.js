@@ -42,9 +42,15 @@ const Profile = ({ classes, user }) => {
         </Typography>
       </Paper>
 
-      <Typography variant="display1" color="primary" className={classes.title}>
-        Shared Items
-      </Typography>
+      {numShared > 0 && (
+        <Typography
+          variant="display1"
+          color="primary"
+          className={classes.title}
+        >
+          Shared Items
+        </Typography>
+      )}
 
       <ItemGrid items={user.items} />
     </div>
