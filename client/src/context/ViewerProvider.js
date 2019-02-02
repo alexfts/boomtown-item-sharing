@@ -1,6 +1,7 @@
 import { Query } from 'react-apollo';
 import React from 'react';
 import { VIEWER_QUERY } from '../apollo/queries';
+import PropTypes from 'prop-types';
 
 export const ViewerContext = React.createContext();
 
@@ -17,4 +18,8 @@ export const ViewerProvider = ({ children }) => {
       }}
     </Query>
   );
+};
+
+ViewerProvider.propTypes = {
+  children: PropTypes.element.isRequired
 };

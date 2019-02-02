@@ -22,6 +22,7 @@ import { withRouter } from 'react-router';
 import styles from './styles';
 import { LOGOUT_MUTATION, VIEWER_QUERY } from '../../apollo/queries';
 import { graphql, compose } from 'react-apollo';
+import PropTypes from 'prop-types';
 
 class ControlBar extends React.Component {
   constructor(props) {
@@ -112,6 +113,12 @@ class ControlBar extends React.Component {
     );
   }
 }
+
+ControlBar.propTypes = {
+  location: PropTypes.object.isRequired,
+  logoutMutation: PropTypes.func.isRequired,
+  classes: PropTypes.object
+};
 
 const refetchQueries = [
   {

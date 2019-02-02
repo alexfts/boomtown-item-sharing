@@ -5,6 +5,7 @@ import styles from './styles';
 import FullScreenLoader from '../../components/FullScreenLoader';
 import { Query } from 'react-apollo';
 import { ALL_ITEMS_QUERY } from '../../apollo/queries';
+import PropTypes from 'prop-types';
 
 const ItemsContainer = ({ classes }) => (
   <Query query={ALL_ITEMS_QUERY} fetchPolicy="network-only">
@@ -20,5 +21,9 @@ const ItemsContainer = ({ classes }) => (
     }}
   </Query>
 );
+
+ItemsContainer.propTypes = {
+  classes: PropTypes.object
+};
 
 export default withStyles(styles)(ItemsContainer);

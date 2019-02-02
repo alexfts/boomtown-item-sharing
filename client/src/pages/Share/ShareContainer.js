@@ -5,6 +5,7 @@ import styles from './styles';
 import FullScreenLoader from '../../components/FullScreenLoader';
 import { Query } from 'react-apollo';
 import { ALL_TAGS_QUERY } from '../../apollo/queries';
+import PropTypes from 'prop-types';
 
 const ShareContainer = ({ classes }) => (
   <Query query={ALL_TAGS_QUERY}>
@@ -15,5 +16,9 @@ const ShareContainer = ({ classes }) => (
     }}
   </Query>
 );
+
+ShareContainer.propTypes = {
+  classes: PropTypes.object
+};
 
 export default withStyles(styles)(ShareContainer);

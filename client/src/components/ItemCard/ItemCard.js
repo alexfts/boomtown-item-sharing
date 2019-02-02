@@ -85,18 +85,27 @@ ItemCard.propTypes = {
     title: PropTypes.string,
     description: PropTypes.string,
     imageurl: PropTypes.string,
-    tags: PropTypes.arrayOf(PropTypes.object),
+    created: PropTypes.number,
+    tags: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string,
+        title: PropTypes.string
+      })
+    ),
     itemowner: PropTypes.shape({
-      fullname: PropTypes.string,
+      id: PropTypes.string.isRequired,
+      fullname: PropTypes.string.isRequired,
       email: PropTypes.string
     })
-  })
+  }).isRequired,
+  classes: PropTypes.object
 };
 
 ItemCard.defaultProps = {
   item: {
     imageurl: 'http://via.placeholder.com/500x250?text=No image provided',
     itemowner: {
+      id: '0',
       fullname: 'Example',
       email: 'example@example.com'
     },

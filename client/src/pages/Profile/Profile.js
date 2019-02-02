@@ -54,7 +54,8 @@ Profile.propTypes = {
     fullname: PropTypes.string,
     items: PropTypes.arrayOf(PropTypes.object),
     borrowed: PropTypes.arrayOf(PropTypes.object)
-  }).isRequired
+  }).isRequired,
+  classes: PropTypes.object
 };
 
 export default Profile;

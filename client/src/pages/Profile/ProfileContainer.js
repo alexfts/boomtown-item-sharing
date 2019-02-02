@@ -6,12 +6,13 @@ import FullScreenLoader from '../../components/FullScreenLoader';
 import { Query } from 'react-apollo';
 import { ALL_USER_ITEMS_QUERY } from '../../apollo/queries';
 import { ViewerContext } from '../../context/ViewerProvider';
+import PropTypes from 'prop-types';
 
 const ProfileContainer = ({ classes, match }) => {
   const id = match.params.userid;
   return (
     <ViewerContext.Consumer>
-      {({ viewer, loading }) => (
+      {({ viewer }) => (
         <Query query={ALL_USER_ITEMS_QUERY} variables={{ id: id || viewer.id }}>
           {({ loading, error, data }) => {
             if (loading) return <FullScreenLoader inverted />;
@@ -22,6 +23,10 @@ const ProfileContainer = ({ classes, match }) => {
       )}
     </ViewerContext.Consumer>
   );
+};
+
+ProfileContainer.propTypes = {
+  classes: PropTypes.object
 };
 
 export default withStyles(styles)(ProfileContainer);
