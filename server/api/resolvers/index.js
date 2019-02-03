@@ -1,4 +1,4 @@
-const { ApolloError, ForbiddenError } = require('apollo-server-express');
+const { ApolloError } = require('apollo-server-express');
 const jwt = require('jsonwebtoken');
 const authMutations = require('./auth');
 
@@ -16,46 +16,28 @@ module.exports = app => {
         }
         return null;
       },
-      async user(parent, { id }, { pgResource, token }, info) {
+      async user(parent, { id }, { pgResource }, info) {
         try {
-          const viewer = await jwt.decode(token, app.get('JWT_SECRET'));
-          if (!viewer) throw 'Unauthorized';
           const user = await pgResource.getUserById(id);
           return user;
         } catch (e) {
-          if (e === 'Unauthorized') {
-            throw new ForbiddenError(e);
-          } else {
-            throw new ApolloError(e);
-          }
+          throw new ApolloError(e);
         }
       },
-      async items(parent, { filter }, { pgResource, token }) {
+      async items(parent, { filter }, { pgResource }) {
         try {
-          const viewer = await jwt.decode(token, app.get('JWT_SECRET'));
-          if (!viewer) throw 'Unauthorized';
           const items = await pgResource.getItems(filter);
           return items;
         } catch (e) {
-          if (e === 'Unauthorized') {
-            throw new ForbiddenError(e);
-          } else {
-            throw new ApolloError(e);
-          }
+          throw new ApolloError(e);
         }
       },
-      async tags(parent, _, { pgResource, token }) {
+      async tags(parent, _, { pgResource }) {
         try {
-          const viewer = await jwt.decode(token, app.get('JWT_SECRET'));
-          if (!viewer) throw 'Unauthorized';
           const tags = await pgResource.getTags();
           return tags;
         } catch (e) {
-          if (e === 'Unauthorized') {
-            throw new ForbiddenError(e);
-          } else {
-            throw new ApolloError(e);
-          }
+          throw new ApolloError(e);
         }
       }
     },
@@ -122,7 +104,7 @@ module.exports = app => {
       async addItem(parent, { item }, { pgResource, req, token }, info) {
         try {
           const user = await jwt.decode(token, app.get('JWT_SECRET'));
-          if (!user) throw 'Unauthorized';
+          if (!user || !user.id) throw 'Invalid token';
           if (
             item.title === '' ||
             item.description === '' ||
@@ -136,17 +118,13 @@ module.exports = app => {
           });
           return newItem;
         } catch (e) {
-          if (e === 'Unauthorized') {
-            throw new ForbiddenError(e);
-          } else {
-            throw new ApolloError(e);
-          }
+          throw new ApolloError(e);
         }
       },
       async borrow(parent, { itemid }, { pgResource, req, token }, info) {
         try {
           const user = await jwt.decode(token, app.get('JWT_SECRET'));
-          if (!user) throw 'Unauthorized';
+          if (!user || !user.id) throw 'Invalid token';
           const item = await pgResource.getItemById(itemid);
           if (!item || !item.ownerid) throw 'Invalid query';
           if (item.borrowerid || item.ownerid === parseInt(user.id))
@@ -154,28 +132,20 @@ module.exports = app => {
           await pgResource.updateBorrower(itemid, user.id);
           return true;
         } catch (e) {
-          if (e === 'Unauthorized') {
-            throw new ForbiddenError(e);
-          } else {
-            throw new ApolloError(e);
-          }
+          throw new ApolloError(e);
         }
       },
       async return(parent, { itemid }, { pgResource, req, token }, info) {
         try {
           const user = await jwt.decode(token, app.get('JWT_SECRET'));
-          if (!user) throw 'Unauthorized';
+          if (!user || !user.id) throw 'Invalid token';
           const item = await pgResource.getItemById(itemid);
           if (!item || item.borrowerid !== parseInt(user.id))
             throw 'User not allowed to return item';
           await pgResource.updateBorrower(itemid, null);
           return true;
         } catch (e) {
-          if (e === 'Unauthorized') {
-            throw new ForbiddenError(e);
-          } else {
-            throw new ApolloError(e);
-          }
+          throw new ApolloError(e);
         }
       }
     }
