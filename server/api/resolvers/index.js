@@ -1,4 +1,4 @@
-const { ApolloError, AuthenticationError } = require('apollo-server-express');
+const { ApolloError, ForbiddenError } = require('apollo-server-express');
 const jwt = require('jsonwebtoken');
 const authMutations = require('./auth');
 
@@ -24,7 +24,7 @@ module.exports = app => {
           return user;
         } catch (e) {
           if (e === 'Unauthorized') {
-            throw new AuthenticationError(e);
+            throw new ForbiddenError(e);
           } else {
             throw new ApolloError(e);
           }
@@ -38,18 +38,24 @@ module.exports = app => {
           return items;
         } catch (e) {
           if (e === 'Unauthorized') {
-            throw new AuthenticationError(e);
+            throw new ForbiddenError(e);
           } else {
             throw new ApolloError(e);
           }
         }
       },
-      async tags(parent, _, { pgResource }) {
+      async tags(parent, _, { pgResource, token }) {
         try {
+          const viewer = await jwt.decode(token, app.get('JWT_SECRET'));
+          if (!viewer) throw 'Unauthorized';
           const tags = await pgResource.getTags();
           return tags;
         } catch (e) {
-          throw new ApolloError(e);
+          if (e === 'Unauthorized') {
+            throw new ForbiddenError(e);
+          } else {
+            throw new ApolloError(e);
+          }
         }
       }
     },
@@ -131,7 +137,41 @@ module.exports = app => {
           return newItem;
         } catch (e) {
           if (e === 'Unauthorized') {
-            throw new AuthenticationError(e);
+            throw new ForbiddenError(e);
+          } else {
+            throw new ApolloError(e);
+          }
+        }
+      },
+      async borrow(parent, { itemid }, { pgResource, req, token }, info) {
+        try {
+          const user = await jwt.decode(token, app.get('JWT_SECRET'));
+          if (!user) throw 'Unauthorized';
+          const item = await pgResource.getItemById(itemid);
+          if (!item || item.borrowerid || item.ownerid === parseInt(user.id))
+            throw 'User not allowed to borrow item';
+          await pgResource.updateBorrower(itemid, user.id);
+          return true;
+        } catch (e) {
+          if (e === 'Unauthorized') {
+            throw new ForbiddenError(e);
+          } else {
+            throw new ApolloError(e);
+          }
+        }
+      },
+      async return(parent, { itemid }, { pgResource, req, token }, info) {
+        try {
+          const user = await jwt.decode(token, app.get('JWT_SECRET'));
+          if (!user) throw 'Unauthorized';
+          const item = await pgResource.getItemById(itemid);
+          if (!item || item.borrowerid !== parseInt(user.id))
+            throw 'User not allowed to return item';
+          await pgResource.updateBorrower(itemid, null);
+          return true;
+        } catch (e) {
+          if (e === 'Unauthorized') {
+            throw new ForbiddenError(e);
           } else {
             throw new ApolloError(e);
           }

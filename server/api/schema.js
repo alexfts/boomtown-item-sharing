@@ -76,5 +76,7 @@ module.exports = gql`
     signup(user: SignupInput!): User
     login(user: LoginInput!): User
     logout: Boolean
+    borrow(itemid: ID!): Boolean
+    return(itemid: ID!): Boolean
   }
 `;

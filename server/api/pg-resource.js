@@ -114,7 +114,7 @@ module.exports = postgres => {
     async getItemsForUser(id) {
       try {
         const items = await postgres.query({
-          text: `SELECT * FROM items WHERE ownerid = $1;`,
+          text: `SELECT * FROM items WHERE ownerid = $1 ORDER BY created DESC;`,
           values: [id]
         });
         return items.rows;
@@ -146,6 +146,18 @@ module.exports = postgres => {
       }
     },
 
+    async getItemById(id) {
+      try {
+        const items = await postgres.query({
+          text: 'SELECT * FROM items WHERE id = $1',
+          values: [id]
+        });
+        return items.rows[0];
+      } catch (error) {
+        throw 'Error fetching the item';
+      }
+    },
+
     async getTagsForItem(id) {
       try {
         const tagsQuery = {
@@ -160,6 +172,22 @@ module.exports = postgres => {
         return tags.rows;
       } catch (error) {
         throw 'Error fetching tags for item';
+      }
+    },
+
+    async updateBorrower(itemid, borrowerId) {
+      try {
+        const updateBorrowerQuery = {
+          text: `UPDATE items
+          SET borrowerid = $1
+          WHERE
+           id = $2;`,
+          values: [borrowerId, itemid]
+        };
+        const updatedItem = await postgres.query(updateBorrowerQuery);
+        return updatedItem;
+      } catch (error) {
+        throw 'Error updating the borrower';
       }
     },
 
