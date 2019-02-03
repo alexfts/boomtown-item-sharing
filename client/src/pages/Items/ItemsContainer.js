@@ -11,7 +11,7 @@ import { ViewerContext } from '../../context/ViewerProvider';
 const ItemsContainer = ({ classes }) => (
   <ViewerContext.Consumer>
     {({ viewer, viewerLoading }) => (
-      <Query query={ALL_ITEMS_QUERY}>
+      <Query query={ALL_ITEMS_QUERY} fetchPolicy="network-only">
         {({ loading, error, data }) => {
           if (loading || viewerLoading) return <FullScreenLoader inverted />;
           if (error) return <p>{`Error! ${error.message}`}</p>;
