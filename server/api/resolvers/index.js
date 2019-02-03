@@ -148,7 +148,8 @@ module.exports = app => {
           const user = await jwt.decode(token, app.get('JWT_SECRET'));
           if (!user) throw 'Unauthorized';
           const item = await pgResource.getItemById(itemid);
-          if (!item || item.borrowerid || item.ownerid === parseInt(user.id))
+          if (!item || !item.ownerid) throw 'Invalid query';
+          if (item.borrowerid || item.ownerid === parseInt(user.id))
             throw 'User not allowed to borrow item';
           await pgResource.updateBorrower(itemid, user.id);
           return true;

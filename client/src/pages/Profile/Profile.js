@@ -5,7 +5,7 @@ import Gravatar from 'react-gravatar';
 import ItemGrid from '../../components/ItemGrid';
 import PropTypes from 'prop-types';
 
-const Profile = ({ classes, user }) => {
+const Profile = ({ classes, user, viewer }) => {
   if (!user) return <div />;
   const numShared = user.items.length;
   const numBorrowed = user.borrowed.length;
@@ -41,8 +41,18 @@ const Profile = ({ classes, user }) => {
           Shared Items
         </Typography>
       )}
+      <ItemGrid items={user.items} viewer={viewer} />
 
-      <ItemGrid items={user.items} />
+      {numBorrowed > 0 && (
+        <Typography
+          variant="display1"
+          color="primary"
+          className={classes.title}
+        >
+          Borrowed Items
+        </Typography>
+      )}
+      <ItemGrid items={user.borrowed} viewer={viewer} />
     </div>
   );
 };
@@ -55,7 +65,8 @@ Profile.propTypes = {
     items: PropTypes.arrayOf(PropTypes.object),
     borrowed: PropTypes.arrayOf(PropTypes.object)
   }).isRequired,
-  classes: PropTypes.object
+  classes: PropTypes.object,
+  viewer: PropTypes.object.isRequired
 };
 
 export default Profile;

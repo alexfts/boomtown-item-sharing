@@ -5,8 +5,7 @@ const styles = theme => ({
     backgroundColor: theme.palette.secondary.main
   },
   paper: {
-    padding: `${theme.spacing.unit * 6}px`,
-    marginBottom: '48px'
+    padding: `${theme.spacing.unit * 6}px`
   },
   bio: {
     fontSize: '16px',
@@ -26,6 +25,7 @@ const styles = theme => ({
     fontSize: '21px'
   },
   title: {
+    marginTop: '48px',
     marginBottom: '12px'
   },
   name: {

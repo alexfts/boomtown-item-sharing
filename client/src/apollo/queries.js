@@ -39,6 +39,14 @@ export const ITEM_QUERY = gql`
   ${ItemFields}
 `;
 
+export const BORROWED_ITEMS_QUERY = gql`
+  query {
+    borrowedItems {
+      ...ItemFields
+    }
+  }
+`;
+
 export const ALL_ITEMS_QUERY = gql`
   query items($filter: ID) {
     items(filter: $filter) {
@@ -118,5 +126,17 @@ export const LOGIN_MUTATION = gql`
     login(user: $user) {
       id
     }
+  }
+`;
+
+export const BORROW_MUTATION = gql`
+  mutation borrow($itemid: ID!) {
+    borrow(itemid: $itemid)
+  }
+`;
+
+export const RETURN_MUTATION = gql`
+  mutation return($itemid: ID!) {
+    return(itemid: $itemid)
   }
 `;
