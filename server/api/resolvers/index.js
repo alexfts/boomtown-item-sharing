@@ -1,7 +1,6 @@
-const { ApolloError, AuthenticationError } = require('apollo-server-express');
+const { ApolloError } = require('apollo-server-express');
 const jwt = require('jsonwebtoken');
 const authMutations = require('./auth');
-
 const { UploadScalar, DateScalar } = require('../custom-types');
 
 module.exports = app => {
@@ -18,30 +17,18 @@ module.exports = app => {
       },
       async user(parent, { id }, { pgResource, token }, info) {
         try {
-          const viewer = await jwt.decode(token, app.get('JWT_SECRET'));
-          if (!viewer) throw 'Unauthorized';
           const user = await pgResource.getUserById(id);
           return user;
         } catch (e) {
-          if (e === 'Unauthorized') {
-            throw new AuthenticationError(e);
-          } else {
-            throw new ApolloError(e);
-          }
+          throw new ApolloError(e);
         }
       },
       async items(parent, { filter }, { pgResource, token }) {
         try {
-          const viewer = await jwt.decode(token, app.get('JWT_SECRET'));
-          if (!viewer) throw 'Unauthorized';
           const items = await pgResource.getItems(filter);
           return items;
         } catch (e) {
-          if (e === 'Unauthorized') {
-            throw new AuthenticationError(e);
-          } else {
-            throw new ApolloError(e);
-          }
+          throw new ApolloError(e);
         }
       },
       async tags(parent, _, { pgResource }) {
@@ -116,7 +103,6 @@ module.exports = app => {
       async addItem(parent, { item }, { pgResource, req, token }, info) {
         try {
           const user = await jwt.decode(token, app.get('JWT_SECRET'));
-          if (!user) throw 'Unauthorized';
           if (
             item.title === '' ||
             item.description === '' ||
@@ -130,11 +116,7 @@ module.exports = app => {
           });
           return newItem;
         } catch (e) {
-          if (e === 'Unauthorized') {
-            throw new AuthenticationError(e);
-          } else {
-            throw new ApolloError(e);
-          }
+          throw new ApolloError(e);
         }
       }
     }
