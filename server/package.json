@@ -1,7 +1,7 @@
 {
   "name": "boomtown-server",
   "version": "1.0.0",
-  "description": "Server-side code for RED Academy's Boomtown project.",
+  "description": "Server-side code for Boomtown, a web application for item sharing.",
   "main": "main.js",
   "scripts": {
     "jest": "jest --verbose",
@@ -14,7 +14,7 @@
     "start:dev": "NODE_ENV=development nodemon main.js "
   },
   "keywords": [],
-  "author": "",
+  "author": "Alex Fetisova",
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^2.0.0-rc.0",
