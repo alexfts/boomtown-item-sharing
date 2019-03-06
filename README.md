@@ -27,8 +27,6 @@ The server utilizes Apollo's Express middleware to enable flexible queries from 
 
 Note that running the server requires an active instance of PostgreSQL running locally.
 
----
-
 Commands must be run from the `server` directory:
 
 ### Installation
